@@ -610,6 +610,96 @@
     calendario: function (k, t) { rr(-92, -74, 184, 170, 18); fill(P.deep); sk(); rr(-92, -74, 184, 44, [18, 18, 0, 0]); fill(k); rr(-56, -96, 14, 38, 7); fill(WH); rr(42, -96, 14, 38, 7); fill(WH); var on = Math.floor(frac(t * 0.5) * 9); for (var i = 0; i < 9; i++) { rr(-62 + (i % 3) * 46, -14 + Math.floor(i / 3) * 34, 32, 22, 6); fill(i === on ? k : A(WH, 0.4)) } },
     ricerca: function (k) { path([[24, 24], [86, 86]]); stroke(WH, 24, 'round'); circ(-20, -20, 58); fill(A(k, 0.35)); sk(16) },
     stella: function () { var p = []; for (var i = 0; i < 10; i++) { var a = -PI / 2 + i * PI / 5, r = i % 2 ? 42 : 100; p.push([cos(a) * r, sin(a) * r + 8]) } path(p, true); fill(P.gold); sk(7) },
+    // tech and communication
+    robot: function (k, t) { var b = frac(t * 0.5) < 0.05 ? 0.2 : 1; path([[0, -60], [0, -88]]); sk(8); circ(0, -94, 11); fill(k); rr(-92, -20, 22, 50, 8); fill(WH); rr(70, -20, 22, 50, 8); fill(WH); rr(-70, -60, 140, 120, 26); fill(A(k, 0.6)); sk(); ell(-30, -8, 16, 16 * b); fill(WH); ell(30, -8, 16, 16 * b); fill(WH); rr(-30, 28, 60, 10, 5); fill(WH) },
+    laptop: function (k) { rr(-80, -72, 160, 112, 12); fill(P.deep); sk(); rr(-66, -58, 132, 84, 6); fill(A(k, 0.6)); path([[-106, 52], [106, 52], [90, 72], [-90, 72]], true); fill(WH) },
+    impronta: function (k) { for (var i = 0; i < 5; i++) { c.beginPath(); c.ellipse(0, 12, 18 + i * 18, 26 + i * 18, 0, PI * 1.05, PI * (i % 2 ? 2.15 : 1.95)); stroke(i % 2 ? k : WH, 9, 'round') } },
+    notifica: function (k, t) { c.save(); c.translate(0, -80); c.rotate(sin(t * 6) * 0.12 * Math.max(0, sin(t * 1.3))); c.translate(0, 80); circ(0, 74, 16); fill(P.gold); c.beginPath(); c.moveTo(-72, 52); c.quadraticCurveTo(-60, 40, -60, -10); c.quadraticCurveTo(-60, -82, 0, -82); c.quadraticCurveTo(60, -82, 60, -10); c.quadraticCurveTo(60, 40, 72, 52); c.closePath(); fill(P.gold); sk(7); c.restore(); circ(58, -66, 22); fill(P.red) },
+    megafono: function (k, t) { rr(-62, 22, 26, 52, 8); fill(WH); path([[-82, -26], [30, -78], [30, 78], [-82, 26]], true); fill(A(k, 0.75)); sk(8); rr(-102, -30, 24, 60, 6); fill(WH); for (var i = 0; i < 2; i++) { c.beginPath(); c.arc(40, 0, 42 + i * 32, -0.6, 0.6); stroke(A(WH, 0.4 + 0.5 * Math.max(0, sin(t * 5 - i))), 9, 'round') } },
+    videocamera: function (k, t) { rr(-98, -52, 132, 104, 18); fill(A(k, 0.6)); sk(); path([[42, -16], [100, -50], [100, 50], [42, 16]], true); fill(WH); circ(-64, -22, 10); fill(frac(t) < 0.5 ? P.red : A(P.red, 0.3)) },
+    // health and sport
+    pillola: function (k) { c.save(); c.rotate(-0.6); rr(-92, -36, 184, 72, 36); fill(WH); rr(-92, -36, 92, 72, [36, 0, 0, 36]); fill(k); rr(-92, -36, 184, 72, 36); sk(7); c.restore() },
+    croce: function (k, t) { var s = 1 + 0.06 * Math.max(0, sin(t * 5)); c.save(); c.scale(s, s); rr(-30, -92, 60, 184, 12); fill(P.red); rr(-92, -30, 184, 60, 12); fill(P.red); c.restore() },
+    termometro: function (k, t) { var v = 0.45 + 0.35 * sin(t * 1.5); rr(-18, -98, 36, 156, 18); fill(WH); rr(-8, 40 - 120 * v, 16, 120 * v + 12, 8); fill(P.red); circ(0, 64, 36); fill(P.red); sk(7) },
+    siringa: function (k) { c.save(); c.rotate(0.7); path([[0, 52], [0, 104]]); sk(6); rr(-6, -112, 12, 32, 4); fill(WH); rr(-30, -86, 60, 14, 6); fill(WH); rr(-20, -72, 40, 124, 8); fill(A(k, 0.5)); sk(7); c.restore() },
+    dna: function (k, t) { for (var i = 0; i < 10; i++) { var y = -92 + i * 20, x = sin(t * 2 + i * 0.6) * 60; path([[x, y], [-x, y]]); stroke(A(WH, 0.3), 5); circ(x, y, 9); fill(k); circ(-x, y, 9); fill(WH) } },
+    pallone: function (k, t) { circ(0, 0, 92); fill(WH); c.save(); c.rotate(t * 0.8); var p = []; for (var i = 0; i < 5; i++) { var a = -PI / 2 + i * 2 * PI / 5; p.push([cos(a) * 34, sin(a) * 34]); path([[cos(a) * 34, sin(a) * 34], [cos(a) * 92, sin(a) * 92]]); stroke(P.deep, 7) } path(p, true); fill(P.deep); c.restore(); circ(0, 0, 92); stroke(P.deep, 6) },
+    coppa: function () { c.beginPath(); c.arc(-62, -52, 28, PI * 0.5, PI * 1.5); stroke(P.gold, 12); c.beginPath(); c.arc(62, -52, 28, -PI * 0.5, PI * 0.5); stroke(P.gold, 12); c.beginPath(); c.moveTo(-62, -88); c.lineTo(62, -88); c.quadraticCurveTo(62, 12, 0, 22); c.quadraticCurveTo(-62, 12, -62, -88); fill(P.gold); rr(-12, 18, 24, 42, 4); fill(P.gold); rr(-52, 58, 104, 26, 8); fill(P.goldLo) },
+    medaglia: function (k) { path([[-52, -106], [-14, -24], [8, -34], [-26, -106]], true); fill(k); path([[52, -106], [14, -24], [-8, -34], [26, -106]], true); fill(A(k, 0.7)); circ(0, 30, 64); fill(P.gold); sk(6); label('1', 74, P.goldLo, 0, 34) },
+    manubrio: function (k, t) { c.save(); c.translate(0, -Math.abs(sin(t * 2.5)) * 18); rr(-72, -10, 144, 20, 8); fill(WH); rr(-98, -52, 26, 104, 8); fill(k); rr(72, -52, 26, 104, 8); fill(k); rr(-72, -36, 18, 72, 6); fill(A(k, 0.7)); rr(54, -36, 18, 72, 6); fill(A(k, 0.7)); c.restore() },
+    bandiera: function (k, t) { var p = [], i; for (i = 0; i <= 8; i++) p.push([-66 + i * 20, -96 + sin(t * 4 + i * 0.6) * 8]); for (i = 8; i >= 0; i--) p.push([-66 + i * 20, -14 + sin(t * 4 + i * 0.6) * 8]); path(p, true); fill(k); path([[-70, -104], [-70, 104]]); sk(12) },
+    // food and home
+    posate: function () { rr(-58, -20, 16, 120, 8); fill(WH); for (var i = 0; i < 4; i++) { rr(-76 + i * 13, -102, 8, 60, 4); fill(WH) } rr(-76, -50, 47, 20, 8); fill(WH); c.beginPath(); c.moveTo(42, 100); c.lineTo(42, -102); c.quadraticCurveTo(84, -60, 74, 10); c.lineTo(58, 10); c.lineTo(58, 100); c.closePath(); fill(WH) },
+    mela: function () { c.beginPath(); c.moveTo(0, -52); c.bezierCurveTo(-92, -92, -112, 42, -30, 92); c.quadraticCurveTo(0, 102, 30, 92); c.bezierCurveTo(112, 42, 92, -92, 0, -52); fill(P.red); sk(6); path([[0, -52], [-6, -90]]); sk(7); c.save(); c.translate(22, -78); c.rotate(-0.6); ell(0, 0, 28, 12); fill(P.green); c.restore() },
+    tazza: function (k, t) { c.beginPath(); c.arc(50, 14, 26, -PI / 2, PI / 2); stroke(WH, 12); rr(-72, -40, 112, 112, [10, 10, 40, 40]); fill(A(k, 0.75)); sk(); for (var i = 0; i < 3; i++) { var p = []; for (var j = 0; j < 5; j++) p.push([-44 + i * 28 + sin(t * 3 + j + i) * 6, -54 - j * 12]); path(p); stroke(A(WH, 0.55), 6, 'round') } },
+    pizza: function () { path([[0, 96], [-82, -70], [82, -70]], true); fill(P.gold); sk(6); c.beginPath(); c.moveTo(-88, -70); c.quadraticCurveTo(0, -108, 88, -70); stroke(P.goldLo, 22, 'round'); circ(-22, -32, 14); fill(P.red); circ(26, -22, 14); fill(P.red); circ(0, 26, 12); fill(P.red) },
+    bottiglia: function (k) { rr(-18, -106, 36, 42, 6); fill(WH); c.beginPath(); c.moveTo(-18, -66); c.quadraticCurveTo(-56, -52, -56, -10); c.lineTo(-56, 100); c.lineTo(56, 100); c.lineTo(56, -10); c.quadraticCurveTo(56, -52, 18, -66); c.closePath(); fill(A(k, 0.6)); sk(8); rr(-56, 4, 112, 44, 0); fill(A(WH, 0.85)) },
+    divano: function (k) { rr(-82, -62, 164, 62, 16); fill(A(k, 0.75)); rr(-102, -10, 204, 72, 16); fill(k); rr(-108, -28, 32, 90, 12); fill(A(k, 0.9)); rr(76, -28, 32, 90, 12); fill(A(k, 0.9)); rr(-88, 62, 12, 24, 4); fill(WH); rr(76, 62, 12, 24, 4); fill(WH) },
+    pianta: function (k, t) { [-0.7, 0, 0.7].forEach(function (a) { c.save(); c.translate(0, 20); c.rotate(a + sin(t * 2 + a) * 0.06); ell(0, -56, 18, 50); fill(P.green); c.restore() }); path([[-52, 20], [52, 20], [40, 100], [-40, 100]], true); fill(P.goldLo) },
+    // travel and transport
+    aereo: function (k, t) { c.save(); c.rotate(-0.5 + sin(t * 2) * 0.05); path([[-8, -12], [-50, -92], [-24, -92], [36, -12]], true); fill(A(k, 0.9)); path([[-8, 12], [-50, 92], [-24, 92], [36, 12]], true); fill(A(k, 0.9)); path([[-92, -10], [-106, -46], [-90, -46], [-70, -10]], true); fill(A(k, 0.9)); rr(-104, -15, 208, 30, 15); fill(WH); c.restore() },
+    valigia: function (k) { rr(-36, -88, 72, 36, 10); sk(10); rr(-92, -56, 184, 142, 18); fill(A(k, 0.7)); sk(); path([[-46, -56], [-46, 86]]); stroke(A(WH, 0.5), 8); path([[46, -56], [46, 86]]); stroke(A(WH, 0.5), 8) },
+    mappa: function (k, t) { c.save(); c.translate(0, -Math.abs(sin(t * 3)) * 12); c.beginPath(); c.arc(0, -30, 62, PI * 0.8, PI * 2.2); c.lineTo(0, 92); c.closePath(); fill(P.red); sk(7); circ(0, -30, 22); fill(WH); c.restore() },
+    bussola: function (k, t) { circ(0, 0, 92); fill(P.deep); sk(); c.save(); c.rotate(sin(t * 1.5) * 0.5); path([[0, -76], [18, 0], [-18, 0]], true); fill(P.red); path([[0, 76], [18, 0], [-18, 0]], true); fill(WH); c.restore(); circ(0, 0, 10); fill(k) },
+    bici: function (k, t) { [-56, 56].forEach(function (x) { circ(x, 40, 42); sk(8); for (var i = 0; i < 4; i++) { var a = t * 4 + i * PI / 2; path([[x, 40], [x + cos(a) * 38, 40 + sin(a) * 38]]); stroke(A(WH, 0.35), 4) } }); path([[-56, 40], [-10, -20], [40, -20], [56, 40]]); stroke(k, 9, 'round', 'round'); path([[-10, -20], [0, 40], [-56, 40]]); stroke(k, 9, 'round', 'round'); path([[0, 40], [40, -20]]); stroke(k, 9, 'round'); rr(-28, -36, 34, 10, 5); fill(WH); path([[40, -20], [34, -46], [56, -46]]); sk(8) },
+    treno: function (k) { path([[-60, 66], [-90, 102]]); sk(8); path([[60, 66], [90, 102]]); sk(8); path([[-80, 92], [80, 92]]); stroke(A(WH, 0.5), 6); rr(-76, -96, 152, 162, 30); fill(A(k, 0.7)); sk(); rr(-56, -76, 112, 56, 10); fill(P.deep); circ(-40, 30, 12); fill(P.gold); circ(40, 30, 12); fill(P.gold) },
+    nave: function (k, t) { c.save(); c.translate(0, sin(t * 2) * 6); rr(12, -78, 26, 42, 4); fill(P.red); rr(-52, -36, 92, 56, 8); fill(WH); path([[-102, 20], [102, 20], [72, 76], [-72, 76]], true); fill(k); sk(7); c.restore(); var p = []; for (var i = 0; i <= 10; i++) p.push([-100 + i * 20, 90 + sin(t * 4 + i) * 6]); path(p); stroke(A(WH, 0.6), 7, 'round') },
+    carburante: function (k) { c.beginPath(); c.moveTo(30, -40); c.quadraticCurveTo(82, -40, 82, 10); c.lineTo(82, 62); stroke(WH, 10, 'round'); rr(-72, -82, 102, 182, 14); fill(A(k, 0.7)); sk(); rr(-54, -64, 66, 50, 6); fill(P.deep) },
+    // work, school, science
+    valigetta: function (k) { rr(-32, -78, 64, 34, 10); sk(10); rr(-96, -46, 192, 132, 16); fill(A(k, 0.7)); sk(); path([[-96, 6], [96, 6]]); sk(8); rr(-14, -4, 28, 22, 4); fill(WH) },
+    laurea: function () { c.beginPath(); c.moveTo(-62, -6); c.lineTo(-62, 50); c.quadraticCurveTo(0, 86, 62, 50); c.lineTo(62, -6); fill(P.deep); sk(8); path([[-106, -30], [0, -82], [106, -30], [0, 20]], true); fill(P.deep); sk(8); path([[0, -30], [86, -10], [86, 50]]); stroke(P.gold, 7, 'round'); circ(86, 56, 11); fill(P.gold) },
+    matita: function () { c.save(); c.rotate(-0.8); rr(-22, -92, 44, 152, 6); fill(P.gold); path([[-22, 60], [22, 60], [0, 106]], true); fill('#F3E9D2'); path([[-7, 90], [7, 90], [0, 106]], true); fill(P.deep); rr(-22, -108, 44, 22, 8); fill(P.red); c.restore() },
+    lavagna: function (k, t) { path([[-60, 60], [-82, 102]]); stroke(P.goldLo, 10); path([[60, 60], [82, 102]]); stroke(P.goldLo, 10); rr(-102, -78, 204, 138, 10); fill(P.deep); stroke(P.goldLo, 12); poly([[-72, -32], [-32, -52], [8, -22], [62, -42]], easeOut(prog(frac(t / 3) * 3, 0.1, 1)), WH, 7); poly([[-72, 12], [52, 12]], easeOut(prog(frac(t / 3) * 3, 0.8, 1.5)), A(k, 0.9), 7) },
+    atomo: function (k, t) { for (var i = 0; i < 3; i++) { c.save(); c.rotate(i * PI / 3); ell(0, 0, 96, 32); stroke(WH, 7); var a = t * 2 + i * 2.1; circ(cos(a) * 96, sin(a) * 32, 10); fill(k); c.restore() } circ(0, 0, 18); fill(k) },
+    provetta: function (k, t) { c.save(); c.rotate(0.3); rr(-20, -10, 40, 92, [0, 0, 20, 20]); fill(P.green); for (var i = 0; i < 3; i++) { circ(sin(i * 2) * 8, 70 - frac(t * 0.8 + i / 3) * 70, 5); fill(A(WH, 0.7)) } rr(-30, -98, 60, 190, 30); sk(8); rr(-38, -104, 76, 14, 7); fill(WH); c.restore() },
+    calcolatrice: function (k) { rr(-72, -98, 144, 196, 16); fill(P.deep); sk(); rr(-52, -78, 104, 42, 6); fill(A(k, 0.6)); for (var i = 0; i < 9; i++) { rr(-52 + (i % 3) * 38, -22 + Math.floor(i / 3) * 38, 28, 28, 6); fill(i === 8 ? k : A(WH, 0.6)) } },
+    razzo: function (k, t) { c.save(); c.rotate(0.6); path([[-24, 44], [0, 88 + sin(t * 20) * 12], [24, 44]], true); fill(P.gold); path([[-40, 8], [-70, 62], [-40, 42]], true); fill(P.red); path([[40, 8], [70, 62], [40, 42]], true); fill(P.red); c.beginPath(); c.moveTo(0, -106); c.quadraticCurveTo(46, -60, 40, 42); c.lineTo(-40, 42); c.quadraticCurveTo(-46, -60, 0, -106); fill(WH); circ(0, -30, 18); fill(k); c.restore() },
+    // nature and energy
+    foglia: function (k, t) { c.save(); c.rotate(-0.6 + sin(t * 2) * 0.08); c.beginPath(); c.moveTo(0, 96); c.quadraticCurveTo(-100, 0, 0, -100); c.quadraticCurveTo(100, 0, 0, 96); fill(P.green); sk(6); path([[0, 96], [0, -80]]); stroke(A(WH, 0.6), 6); c.restore() },
+    sole: function (k, t) { c.save(); c.rotate(t * 0.4); for (var i = 0; i < 8; i++) { c.rotate(PI / 4); rr(-9, -106, 18, 32, 9); fill(P.gold) } c.restore(); circ(0, 0, 58); fill(P.gold) },
+    goccia: function () { c.beginPath(); c.moveTo(0, -100); c.bezierCurveTo(40, -40, 75, 0, 75, 30); c.arc(0, 30, 75, 0, PI); c.bezierCurveTo(-75, 0, -40, -40, 0, -100); fill(P.blue); sk(6); ell(-28, 40, 10, 20); fill(A(WH, 0.6)) },
+    albero: function () { rr(-14, 20, 28, 82, 6); fill(P.goldLo); circ(-46, 0, 42); fill(P.green); circ(46, 0, 42); fill(P.green); circ(0, -36, 62); fill(P.green) },
+    riciclo: function (k, t) { c.save(); c.rotate(t * 0.5); for (var i = 0; i < 3; i++) { c.rotate(2 * PI / 3); var a = PI / 6 - 0.6, x = cos(a) * 72, y = sin(a) * 72; c.beginPath(); c.arc(0, 0, 72, -PI / 2 + 0.3, a); stroke(P.green, 20, 'butt'); path([[x + cos(a) * 30, y + sin(a) * 30], [x - cos(a) * 30, y - sin(a) * 30], [x - sin(a) * 42, y + cos(a) * 42]], true); fill(P.green) } c.restore() },
+    pioggia: function (k, t) { for (var i = 0; i < 6; i++) { var x = -62 + i * 25, y = 30 + frac(t * 1.2 + i * 0.37) * 62; path([[x, y], [x - 6, y + 18]]); stroke(P.blue, 7, 'round') } c.save(); c.translate(0, -30); c.scale(0.85, 0.85); ICONS.cloud('#E6EDF7'); c.restore() },
+    neve: function (k, t) { for (var i = 0; i < 6; i++) { c.save(); c.rotate(i * PI / 3 + t * 0.3); path([[0, 0], [0, -96]]); sk(10); path([[0, -60], [-22, -80]]); sk(8); path([[0, -60], [22, -80]]); sk(8); c.restore() } circ(0, 0, 14); fill(k) },
+    pannello: function (k, t) { path([[0, 50], [0, 96]]); sk(10); path([[-40, 96], [40, 96]]); sk(10); rr(-102, -62, 204, 112, 8); fill(P.blue); sk(6); for (var i = 1; i < 4; i++) { path([[-102 + i * 51, -62], [-102 + i * 51, 50]]); stroke(A(WH, 0.5), 4) } path([[-102, -6], [102, -6]]); stroke(A(WH, 0.5), 4); glow(-60, -40, 50, WH, 0.3 * (1 + sin(t * 3))) },
+    presa: function (k) { rr(-82, -82, 164, 164, 30); fill(WH); circ(0, 0, 56); fill(A(k, 0.35)); rr(-30, -26, 14, 40, 7); fill(P.deep); rr(16, -26, 14, 40, 7); fill(P.deep); circ(0, 32, 8); fill(P.deep) },
+    pala: function (k, t) { path([[0, -20], [-12, 100], [12, 100]], true); fill(WH); c.save(); c.translate(0, -20); c.rotate(t * 2); for (var i = 0; i < 3; i++) { c.rotate(2 * PI / 3); ell(0, -46, 12, 48); fill(WH) } c.restore(); circ(0, -20, 12); fill(k) },
+    fuoco: function (k, t) { var f = 1 + 0.05 * sin(t * 9); c.save(); c.scale(f, 2 - f); c.beginPath(); c.moveTo(0, -100); c.bezierCurveTo(60, -40, 82, 10, 72, 40); c.bezierCurveTo(62, 92, -62, 92, -72, 40); c.bezierCurveTo(-82, 0, -40, -30, 0, -100); fill(P.red); c.translate(0, 36); c.scale(0.55, 0.55); c.beginPath(); c.moveTo(0, -100); c.bezierCurveTo(60, -40, 82, 10, 72, 40); c.bezierCurveTo(62, 92, -62, 92, -72, 40); c.bezierCurveTo(-82, 0, -40, -30, 0, -100); fill(P.gold); c.restore() },
+    montagna: function (k) { circ(66, -70, 22); fill(P.gold); path([[-106, 90], [-30, -62], [20, 20], [52, -20], [106, 90]], true); fill(A(k, 0.75)); sk(7); path([[-30, -62], [-48, -26], [-30, -36], [-12, -26]], true); fill(WH) },
+    // shopping and money (for any brand, not the money scenes)
+    borsa: function (k) { c.beginPath(); c.arc(0, -36, 38, PI, 0); stroke(WH, 10); path([[-76, -36], [76, -36], [86, 96], [-86, 96]], true); fill(A(k, 0.75)); sk() },
+    etichetta: function () { path([[-98, 0], [-42, -72], [92, -72], [92, 72], [-42, 72]], true); fill(P.gold); sk(7); circ(-50, 0, 12); fill(P.deep); label('%', 72, P.goldLo, 26, 2) },
+    carta: function (k) { rr(-102, -64, 204, 128, 16); fill(grad(k, P.deep, -102, -64, 204, 128)); sk(6); rr(-102, -36, 204, 24, 0); fill(P.deep); rr(-76, 10, 40, 30, 6); fill(P.gold); rr(0, 20, 72, 10, 5); fill(A(WH, 0.6)) },
+    pacco: function () { rr(-86, -72, 172, 162, 8); fill(P.goldLo); rr(-16, -72, 32, 162, 0); fill(A(WH, 0.45)); path([[-86, -22], [86, -22]]); stroke('rgba(0,0,0,.2)', 4) },
+    negozio: function (k) { rr(-92, -42, 184, 134, 4); fill(A(k, 0.5)); sk(7); rr(-26, 20, 52, 72, 4); fill(P.deep); rr(-78, -22, 44, 40, 4); fill(A(WH, 0.7)); for (var i = 0; i < 5; i++) { rr(-100 + i * 40, -82, 40, 42, [0, 0, 20, 20]); fill(i % 2 ? WH : P.red) } },
+    salvadanaio: function (k, t) { var p = frac(t * 0.8); coin(0, lerp(-130, -62, easeIn(p)), 20, t * 6, Math.min(1, (1 - p) * 4)); path([[-50, 50], [-50, 90]]); stroke('#F4A6C6', 22, 'round'); path([[40, 50], [40, 90]]); stroke('#F4A6C6', 22, 'round'); ell(-8, 10, 92, 68); fill('#F4A6C6'); path([[-60, -46], [-40, -84], [-22, -54]], true); fill('#F4A6C6'); ell(84, 10, 18, 24); fill('#E98BB1'); circ(40, -14, 8); fill(P.deep); rr(-28, -62, 44, 9, 4); fill(P.deep) },
+    banca: function (k) { path([[-102, -44], [0, -100], [102, -44]], true); fill(WH); for (var i = 0; i < 4; i++) { rr(-76 + i * 44, -34, 22, 96, 4); fill(WH) } rr(-106, 62, 212, 24, 4); fill(WH); circ(0, -64, 12); fill(k) },
+    // people, media, leisure
+    bambino: function (k, t) { path([[50, -30], [20, 40]]); stroke(A(WH, 0.6), 3); circ(56 + sin(t * 2) * 4, -68, 28); fill(P.red); man(-20, 26, 0.72, k) },
+    clessidra: function (k, t) { var v = frac(t * 0.25); path([[-60, -95], [60, -95], [8, 0], [60, 95], [-60, 95], [-8, 0]], true); fill(A(WH, 0.12)); sk(8); path([[-46 * (1 - v), -86 + 80 * v], [46 * (1 - v), -86 + 80 * v], [0, -6]], true); fill(P.gold); path([[-52, 88], [52, 88], [0, 88 - 70 * v]], true); fill(P.gold); path([[0, -6], [0, 88]]); stroke(P.gold, 4); rr(-76, -106, 152, 14, 6); fill(P.goldLo); rr(-76, 92, 152, 14, 6); fill(P.goldLo) },
+    nota: function (k, t) { c.save(); c.translate(0, sin(t * 3) * 6); path([[-22, 60], [-22, -70], [68, -90], [68, 40]]); sk(12); path([[-22, -42], [68, -62]]); sk(12); circ(-46, 60, 26); fill(k); circ(44, 40, 26); fill(k); c.restore() },
+    cuffie: function (k) { c.beginPath(); c.arc(0, 0, 80, PI, 0); stroke(WH, 16, 'round'); rr(-102, -6, 40, 82, 16); fill(k); rr(62, -6, 40, 82, 16); fill(k) },
+    microfono: function (k) { c.beginPath(); c.arc(0, 0, 58, 0, PI); stroke(WH, 10, 'round'); path([[0, 58], [0, 96]]); sk(10); path([[-40, 96], [40, 96]]); sk(10); rr(-35, -102, 70, 122, 35); fill(A(k, 0.8)); sk(8); for (var i = 0; i < 3; i++) { path([[-35, -70 + i * 22], [35, -70 + i * 22]]); stroke(A(WH, 0.4), 5) } },
+    altoparlante: function (k, t) { path([[-92, -30], [-52, -30], [0, -80], [0, 80], [-52, 30], [-92, 30]], true); fill(A(k, 0.8)); sk(8); for (var i = 0; i < 3; i++) { c.beginPath(); c.arc(10, 0, 35 + i * 30, -0.7, 0.7); stroke(A(WH, 0.3 + 0.7 * Math.max(0, sin(t * 5 - i))), 9, 'round') } },
+    fotocamera: function (k, t) { rr(-40, -82, 80, 30, 8); fill(WH); rr(-102, -56, 204, 142, 20); fill(A(k, 0.6)); sk(); circ(0, 15, 48); fill(P.deep); sk(8); circ(0, 15, 26); fill(A(WH, 0.5)); circ(72, -30, 10); fill(frac(t * 0.5) < 0.08 ? WH : A(WH, 0.3)) },
+    tavolozza: function () { ell(0, 0, 102, 82); fill('#F3E9D2'); circ(42, 36, 20); fill(P.deep); [[-50, -26, P.red], [-10, -48, P.gold], [36, -36, P.blue], [-56, 26, P.green]].forEach(function (d) { circ(d[0], d[1], 17); fill(d[2]) }) },
+    play: function (k, t) { var s = 1 + 0.05 * sin(t * 4); c.save(); c.scale(s, s); circ(0, 0, 94); fill(P.red); path([[-28, -46], [52, 0], [-28, 46]], true); fill(WH); c.restore() },
+    pollice: function (k, t) { c.save(); c.rotate(-Math.max(0, sin(t * 4)) * 0.12); rr(-94, -10, 42, 102, 8); fill(k); c.beginPath(); c.moveTo(-42, -6); c.lineTo(-6, -62); c.quadraticCurveTo(6, -102, 30, -86); c.quadraticCurveTo(42, -76, 30, -30); c.lineTo(80, -30); c.quadraticCurveTo(102, -28, 96, -4); c.lineTo(82, 80); c.quadraticCurveTo(76, 92, 60, 92); c.lineTo(-42, 92); c.closePath(); fill(WH); c.restore() },
+    condividi: function (k) { path([[62, -62], [-62, 0], [62, 62]]); sk(10); [[62, -62], [-62, 0], [62, 62]].forEach(function (d) { circ(d[0], d[1], 28); fill(k) }) },
+    hashtag: function (k) { for (var i = 0; i < 2; i++) { path([[-30 + i * 60 + 14, -96], [-30 + i * 60 - 14, 96]]); stroke(WH, 18, 'round'); path([[-92, -30 + i * 60], [92, -30 + i * 60]]); stroke(i ? k : WH, 18, 'round') } },
+    bilancia: function (k, t) { var a = sin(t * 1.5) * 0.12; path([[0, -90], [0, 86]]); sk(10); path([[-62, 86], [62, 86]]); sk(12); c.save(); c.translate(0, -70); c.rotate(a); path([[-82, 0], [82, 0]]); sk(10); [-1, 1].forEach(function (d) { path([[d * 82, 0], [d * 82 - 32, 50], [d * 82 + 32, 50]], true); stroke(A(WH, 0.6), 4); c.beginPath(); c.arc(d * 82, 50, 34, 0, PI); fill(k) }); c.restore() },
+    penna: function (k, t) { poly([[-92, 92], [-62, 70], [-42, 96], [-12, 72], [12, 92]], easeOut(prog(frac(t / 3) * 3, 0.2, 1.2)), WH, 5); c.save(); c.rotate(0.8); rr(-14, -102, 28, 142, 10); fill(A(k, 0.85)); sk(6); path([[-14, 40], [14, 40], [0, 86]], true); fill(WH); c.restore() },
+    zampa: function (k) { ell(0, 36, 50, 42); fill(k); [[-58, -14], [-21, -52], [21, -52], [58, -14]].forEach(function (d) { ell(d[0], d[1], 18, 25); fill(k) }) },
+    pesce: function (k, t) { c.save(); c.rotate(sin(t * 5) * 0.06); path([[48, 0], [100, -42], [100, 42]], true); fill(P.blue); ell(-10, 0, 72, 46); fill(P.blue); circ(-46, -10, 9); fill(WH); c.restore(); for (var i = 0; i < 2; i++) { circ(-90 + i * 14, -50 - frac(t * 0.6 + i / 2) * 50, 7); stroke(A(WH, 0.6), 3) } },
+    dado: function (k, t) { c.save(); c.rotate(sin(t * 2) * 0.15); rr(-80, -80, 160, 160, 30); fill(WH); [[-40, -40], [40, -40], [0, 0], [-40, 40], [40, 40]].forEach(function (d) { circ(d[0], d[1], 14); fill(P.deep) }); c.restore() },
+    controller: function (k) { rr(-102, -46, 204, 102, 50); fill(A(k, 0.8)); sk(7); rr(-72, -8, 52, 16, 4); fill(WH); rr(-54, -26, 16, 52, 4); fill(WH); circ(46, -12, 11); fill(P.gold); circ(70, 10, 11); fill(P.red) },
+    puzzle: function (k) { rr(-72, -62, 132, 132, 12); fill(k); circ(-6, -62, 26); fill(k); circ(60, 4, 26); fill(k); circ(-6, 70, 24); fill(P.deep); circ(-72, 4, 24); fill(P.deep) },
+    maglietta: function (k) { path([[-40, -92], [-102, -52], [-76, -10], [-56, -26], [-56, 96], [56, 96], [56, -26], [76, -10], [102, -52], [40, -92], [20, -72], [-20, -72]], true); fill(A(k, 0.8)); sk(7) },
+    regalo: function (k) { ell(-30, -76, 30, 16); fill(P.gold); ell(30, -76, 30, 16); fill(P.gold); rr(-86, -30, 172, 120, 8); fill(k); rr(-96, -62, 192, 36, 8); fill(A(k, 0.8)); rr(-14, -62, 28, 152, 0); fill(P.gold) },
+    palazzo: function (k, t) { rr(-72, -102, 144, 204, 8); fill(A(k, 0.5)); sk(7); for (var i = 0; i < 12; i++) { rr(-50 + (i % 3) * 36, -80 + Math.floor(i / 3) * 44, 22, 28, 4); fill(frac(i * 0.37 + t * 0.1) < 0.6 ? A(P.gold, 0.85) : A(WH, 0.25)) } },
+    fabbrica: function (k, t) { for (var i = 0; i < 3; i++) { var p = frac(t * 0.5 + i / 3); circ(73 + sin(i * 2) * 8, -96 - p * 40, 12 + p * 14); fill(A(WH, 0.5 * (1 - p))) } rr(60, -92, 26, 186, 4); fill(A(k, 0.9)); path([[-102, 94], [-102, -10], [-52, -42], [-52, -10], [-2, -42], [-2, -10], [50, -42], [50, 94]], true); fill(A(k, 0.7)); sk(7) },
+    bersaglio: function (k, t) { [92, 66, 40].forEach(function (r, i) { circ(0, 0, r); fill(i % 2 ? WH : P.red) }); circ(0, 0, 14); fill(P.red); var p = easeOut(prog(frac(t / 2.5) * 2.5, 0.2, 0.7)); path([[lerp(130, 10, p), lerp(-130, -10, p)], [lerp(190, 70, p), lerp(-190, -70, p)]]); stroke(P.gold, 10, 'round') },
   }
   /** Words that call an icon, matched anywhere in the chapter (a leading space = start of a word). */
   var IKW = {
@@ -647,6 +737,88 @@
     ricerca: ['cerca', 'ricerca', 'trovare', 'google', 'motore di'],
     stella: ['miglior', 'qualità', 'stelle', 'recension'],
     lampadina: ['idea', 'trucco', 'capire', 'scopri', 'consiglio'],
+    robot: ['robot', 'automa ', 'automazion'],
+    laptop: ['computer', 'laptop', 'portatil', ' pc '],
+    impronta: ['impronta', 'biometric', 'face id', 'identità'],
+    notifica: ['notific', 'avvis', 'campanell', 'allert'],
+    megafono: ['annunc', 'pubblicit', 'megafono', 'promuov', 'promozion'],
+    controller: ['videogioc', 'gaming', 'console', 'gioc'],
+    videocamera: ['video', 'videochiamat', 'telecamer', 'registra'],
+    pillola: ['pillol', 'farmac', 'medicin'],
+    croce: ['ospedal', 'medic', 'pronto soccorso', 'sanit'],
+    termometro: ['febbre', 'temperatur'],
+    siringa: ['vaccin', 'iniezion', 'siring'],
+    dna: [' dna', 'genetic', 'genoma'],
+    pallone: ['calcio', 'pallone', 'partita', ' palla'],
+    coppa: ['vince', 'vittori', 'campion', 'coppa', 'trofeo'],
+    medaglia: ['medagli', 'primo posto', 'podio'],
+    manubrio: ['palestra', 'allenament', ' pesi', 'fitness', 'muscol'],
+    bandiera: ['bandier', 'italia', 'nazion', 'arrivo'],
+    posate: ['mangi', 'pranzo', ' cena', 'ristorant', 'pasto', 'pasti'],
+    mela: ['mela', 'frutta', 'dieta', ' sano', 'vitamin'],
+    tazza: ['caffè', 'caffe', 'tazza', 'colazion', ' tè'],
+    pizza: ['pizza', 'fast food', 'cibo'],
+    bottiglia: ['bottigli', 'bere', 'bevand', ' vino', 'acqua'],
+    divano: ['divano', 'relax', 'riposo', 'salotto', 'arred'],
+    pianta: ['pianta', 'piante', 'giardin', 'fiori'],
+    aereo: ['aereo', ' volo', ' voli', 'aeroporto'],
+    valigia: ['valigia', 'vacanz', 'viaggio', 'bagagl'],
+    mappa: ['mappa', 'posizion', 'indirizz', ' gps', 'luogo', 'luoghi'],
+    bussola: ['bussola', 'direzion', 'orientar', 'rotta'],
+    bici: ['bici', 'pedal', 'ciclis'],
+    treno: ['treno', 'treni', ' metro', 'stazion', 'pendolar'],
+    nave: ['nave', ' mare', 'porto', 'crociera', 'barca'],
+    carburante: ['benzina', 'carburant', 'diesel', 'il pieno'],
+    valigetta: ['lavoro', 'ufficio', 'aziend', 'impres', 'business', 'carriera'],
+    laurea: ['laurea', 'universit', 'diploma', 'master'],
+    matita: ['appunt', 'matita', 'compit', 'scrittur'],
+    lavagna: ['lezion', 'insegn', 'spiega', 'lavagna', 'professor'],
+    atomo: ['scienz', 'fisic', 'atomo', 'atomi', 'nucleare'],
+    provetta: ['chimic', 'laborator', 'esperiment', 'provetta', 'analisi'],
+    calcolatrice: ['calcolatrice', 'fare i conti', 'matematic', 'percentual'],
+    razzo: ['lancio', 'razzo', 'startup', 'innovazion', 'decoll', 'spazio'],
+    foglia: ['natura', 'ecolog', 'green', 'sostenib', 'foglia', 'ambient'],
+    sole: ['sole', 'estate', 'solare', ' luce'],
+    goccia: ['goccia', 'idrata', 'umidit'],
+    albero: ['albero', 'alberi', 'bosco', 'foresta', 'legno'],
+    riciclo: ['ricicl', 'riuso', 'rifiut', 'circolar'],
+    pioggia: ['pioggia', 'piove', 'temporale', 'maltempo'],
+    neve: ['neve', 'invern', 'gelo', 'freddo'],
+    pannello: ['pannell', 'fotovoltaic', 'rinnovabil'],
+    presa: ['presa', 'corrente', 'elettricit', 'caricator', 'spina'],
+    pala: ['vento', 'eolic', 'pala '],
+    fuoco: ['fuoco', 'brucia', 'incendi', 'virale', ' hot'],
+    montagna: ['montagn', 'scalare', 'vetta', 'difficil', 'sfida'],
+    borsa: ['shopping', 'borsa', 'compere', 'saldi'],
+    etichetta: ['sconto', 'sconti', 'prezzo', 'prezzi', 'offert', 'promo', 'etichett'],
+    carta: ['carta di credito', 'bancomat', 'contactless', 'pagament', 'carta '],
+    pacco: ['pacco', 'pacchi', 'spedizion', 'consegn', 'ordin', 'corriere'],
+    negozio: ['negozio', 'negozi', 'bottega', 'vetrina', 'commerci'],
+    salvadanaio: ['risparm', 'salvadanai', 'da parte'],
+    banca: ['banca', 'banche', 'conto corrente', 'bonifico'],
+    bambino: ['bambin', 'figli', 'ragazz', 'giovan'],
+    clessidra: ['scadenz', 'attesa', 'pazienz', 'clessidra', 'tempo che passa'],
+    nota: ['musica', 'canzon', 'melodia', 'concert'],
+    cuffie: ['cuffie', 'ascolt', 'podcast', 'audio'],
+    microfono: ['microfon', 'intervist', 'canta', ' voce'],
+    altoparlante: ['volume', 'suono', 'rumor', 'altoparlant'],
+    fotocamera: ['foto', 'fotograf', 'scatt', 'fotocamera'],
+    tavolozza: [' arte', 'disegn', 'colori', 'pittur', 'creativ', 'design'],
+    play: ['youtube', ' film', 'serie tv', 'streaming', 'netflix'],
+    pollice: [' like', 'mi piace', 'approv', 'consens', 'follower'],
+    condividi: ['condivid', 'inoltr', 'share', 'invia'],
+    hashtag: ['hashtag', 'social', 'trend', 'instagram', 'tiktok'],
+    bilancia: ['legge', 'leggi', 'giustizi', 'equilibri', 'diritt', 'avvocat'],
+    penna: ['firma', 'firmare', 'penna', 'sottoscriv'],
+    zampa: [' cane', ' cani', 'gatto', 'gatti', 'animal', ' pet'],
+    pesce: ['pesce', 'pesci', 'pesca', 'acquario'],
+    dado: ['fortuna', 'probabilit', 'scommess', 'dado', 'azzard'],
+    puzzle: ['puzzle', 'soluzion', 'incastr', 'risolv'],
+    maglietta: ['maglia', 'vestit', ' moda', 'abbigliament', 'outfit'],
+    regalo: ['regalo', 'regali', 'bonus', 'omaggio', 'sorpresa', 'premio'],
+    palazzo: ['palazz', 'città', 'edifici', 'condomin'],
+    fabbrica: ['fabbric', 'industri', 'produzion', 'stabiliment'],
+    bersaglio: ['obiettiv', 'target', 'traguard', 'mira '],
   }
   /** The whole word a match falls in, as a short label: "locale" -> "Locale", "ia" -> "IA". */
   function wordAt(s, i) {
@@ -674,47 +846,358 @@
       var s = typeof x === 'string' ? x : x && typeof x === 'object' ? String(x.id || '') + (x.label ? ':' + x.label : '') : ''
       var p = s.split(':'), id = norm(p[0]).replace(/ /g, '')
       return ICONS[id] ? { id: id, label: str(p.slice(1).join(':'), 14) } : null
-    }).filter(Boolean).slice(0, 3)
+    }).filter(Boolean).slice(0, 6)
   }
   /** A video is "about money" when enough of its chapters talk money: only then the money scenes (coins, ETF, charts) fit. */
   var MONEY_KW = ['etf', 'dividend', ' azion', 'obbligazion', 'borsa', 'invest', 'rendiment', 'risparm', 'interesse composto', 'interessi', 'tasse', 'fisco', 'fiscal', 'inflazion', 'mutuo', 'pension', 'portafoglio', 'cedol', 'plusvalen', 'minusvalen', 'commission', 'bitcoin', 'cripto', 'patrimoni', ' btp', ' fondi ', ' fondo ', 'tassi', 'conto deposito', 'stipendi', 'capitale']
   function moneyTalk(s) { s = ' ' + String(s || '').toLowerCase() + ' '; return MONEY_KW.some(function (k) { return s.indexOf(k) >= 0 }) }
   var NEUTRAL = { domanda: 1, checklist: 1, errore: 1, obiettivo: 1, tempo: 1, protezione: 1, cta: 1, icone: 1 }
 
-  S.icone = function (t, dur, sh) {
-    var ic = (sh.icons || []).filter(function (x) { return ICONS[x.id] }).slice(0, 3)
-    if (!ic.length) ic = [{ id: 'lampadina', label: '' }]
-    var n = ic.length, cols = [P.green, P.blue, P.gold], cy = n === 1 ? 400 : 420
-    var pos = n === 1 ? [[450, cy]] : n === 2 ? [[205, cy], [695, cy]] : [[150, cy], [450, cy], [750, cy]]
-    var s = n === 1 ? 1.5 : n === 2 ? 1.15 : 0.8
-    function lane(x1, x2, y, col, rev, al) { // a dashed wire with packets running along it
-      if (al <= 0) return
-      c.save(); c.globalAlpha *= al
-      c.setLineDash([14, 14]); c.lineDashOffset = (rev ? 1 : -1) * t * 40
-      path([[x1, y], [x2, y]]); stroke(A(WH, 0.35), 6, 'round'); c.setLineDash([])
-      for (var j = 0; j < 3; j++) {
-        var p = frac(t * 0.6 + j / 3), x = rev ? lerp(x2, x1, p) : lerp(x1, x2, p)
-        c.save(); c.globalAlpha *= Math.min(1, p * 6, (1 - p) * 6); rr(x - 18, y - 12, 36, 24, 9); fill(col); c.restore()
-      }
-      c.restore()
-    }
-    if (n === 1) for (var k = 0; k < 3; k++) { var ph = frac(t * 0.6 + k / 3); ring(450, cy, 220 + 200 * ph, A(cols[0], (1 - ph) * 0.4), 8) }
-    var wires = ease(prog(t, 0.55, 0.9)), half = 130 * s + 14
-    if (n > 1 && sh.link !== 'vs') for (var w = 0; w < n - 1; w++) {
-      lane(pos[w][0] + half, pos[w + 1][0] - half, cy - 26, cols[w], false, wires)
-      lane(pos[w][0] + half, pos[w + 1][0] - half, cy + 26, cols[w + 1], true, wires)
-    }
-    ic.forEach(function (it, i) {
-      var pop = back(prog(t, 0.08 + i * 0.2, 0.55 + i * 0.2)), col = cols[i], bob = sin(t * 2 + i * 1.7) * 6
-      if (pop <= 0) return
-      withT(pos[i][0], pos[i][1] + bob, pop * s, function () {
-        glow(0, 0, 200, col, 0.22)
-        rr(-130, -130, 260, 260, 64); fill(grad(P.steelHi, P.panel, -130, -130, 260, 260)); stroke(A(col, 0.9), 7)
-        c.save(); c.scale(0.92, 0.92); ICONS[it.id](col, t + i); c.restore()
-      })
-      if (it.label) { c.save(); c.globalAlpha *= clamp01(pop); label(it.label, n === 3 ? 40 : 48, '#fff', pos[i][0], pos[i][1] + 130 * s + 52, n === 3 ? 270 : 400); c.restore() }
+  /* ---------- layouts: how a chapter's icons move. Layout × domain = one named scene of the catalogue ----------
+     [name, icons needed, icons shown, words in the chapter that call it] */
+  var LAYOUTS = {
+    eroe: ['Protagonista', 1, 1, []],
+    flusso: ['Scambio', 2, 2, ['scambi', 'richiest', 'manda ', 'invia', 'trasferisc']],
+    sfida: ['Sfida A contro B', 2, 2, [' vs ', ' contro ', 'differenz', 'confront', 'meglio di', 'oppure', 'mentre']],
+    catena: ['Catena', 3, 3, ['quindi', 'di conseguenza', 'porta a', 'a sua volta']],
+    hub: ['Rete', 5, 6, ['tutto in', 'al centro', 'collegat', 'ecosistem', 'connett', 'in un posto', 'rete di']],
+    primadopo: ['Prima e dopo', 2, 2, ['prima e dopo', 'invece di', 'al posto di', 'trasform', 'diventa', 'passa da']],
+    bilancia: ['Bilancia', 2, 2, ['pesa ', 'pro e contro', 'vantagg', 'svantagg', 'equilibri', 'conviene', 'vale la pena']],
+    sale: ['Sale', 1, 1, ['aument', 'cresc', ' sale ', 'salgono', 'raddopp', 'record', 'boom']],
+    scende: ['Scende', 1, 1, ['cala', 'calo', 'diminu', 'riduc', 'scende', 'crollo', 'taglia']],
+    griglia: ['Griglia', 4, 6, ['tipi di', 'esempi', 'categori', 'opzioni', 'alternative', 'diversi', 'vari ']],
+    spunte: ['Lista con spunte', 3, 3, ['passi', 'regole', 'consigli', 'cose da', 'checklist', 'step', 'ricorda']],
+    contatore: ['Contatore', 1, 1, []],
+    pioggia: ['Accumulo', 2, 3, ['tanti', 'tantissim', 'milioni', 'migliaia', 'accumul', 'raccogli', 'si riempie']],
+    ciclo: ['Ciclo', 3, 4, ['ciclo', 'ogni volta', 'ripet', 'di nuovo', 'abitudin', 'routine', 'ogni giorno']],
+    bersaglio: ['Bersaglio', 1, 1, ['obiettiv', 'traguard', 'raggiung', 'centra', 'target', 'risultat']],
+    lente: ['Lente', 1, 1, ['dettagl', 'analizz', 'scopri', 'nascost', 'da vicino', 'esamin', 'cerca']],
+    divieto: ['Divieto', 1, 1, ['evita', 'vietat', ' mai ', 'da non', 'non fare', 'errore', 'sbagli', 'attenzione a']],
+    timeline: ['Linea del tempo', 3, 4, [' anni', 'storia', 'evoluz', 'nel 19', 'nel 20', 'infine', 'futuro', 'una volta']],
+    scudo: ['Protezione', 1, 1, ['proteg', 'sicur', 'difend', 'riparo', 'privacy']],
+    onda: ['Diffusione', 2, 4, ['diffond', 'condivid', 'annunc', 'comunic', 'virale', 'notific', 'raggiunge']],
+    scala: ['Scala', 3, 3, ['livell', 'passo dopo passo', 'fasi', 'gradin', 'progress', 'migliora', 'carriera']],
+    unione: ['Unione', 3, 3, ['insieme', 'unisc', 'combin', 'integra', 'somma', 'mettere insieme']],
+  }
+  var CUE_ORDER = ['divieto', 'sfida', 'primadopo', 'bilancia', 'scudo', 'bersaglio', 'sale', 'scende', 'timeline', 'ciclo', 'spunte', 'scala', 'unione', 'onda', 'pioggia', 'lente', 'griglia', 'hub', 'flusso', 'catena']
+  var ALT = { 1: ['eroe', 'lente', 'scudo', 'onda', 'bersaglio', 'contatore'], 2: ['flusso', 'sfida', 'bilancia', 'primadopo', 'unione'], 3: ['catena', 'hub', 'griglia', 'ciclo', 'timeline'] }
+  /** The layout a chapter's words call for, never the previous chapter's one. */
+  function layoutFor(text, n, prev, i, hasNum) {
+    var low = ' ' + String(text || '').toLowerCase() + ' ', k
+    for (k = 0; k < CUE_ORDER.length; k++) { var id = CUE_ORDER[k]; if (id !== prev && LAYOUTS[id][3].some(function (w) { return low.indexOf(w) >= 0 })) return id }
+    if (hasNum && prev !== 'contatore') return 'contatore'
+    var alt = ALT[Math.min(3, Math.max(1, n))]
+    if (alt[0] !== prev) return alt[0]
+    for (k = 0; k < alt.length; k++) { var L = alt[1 + (i + k) % (alt.length - 1)]; if (L !== prev) return L }
+    return alt[0]
+  }
+
+  /* ---------- domains: the icons a topic lends when a layout needs more than the chapter names ----------
+     [name, its icons, words that call it] */
+  var DOMAINS = {
+    tecnologia: ['Tecnologia', 'laptop telefono chip codice cloud server', ['tecnolog', 'digital', 'computer', 'software', 'informatic', 'smartphone']],
+    ia: ['Intelligenza artificiale', 'ia robot chip chat codice server', ['intelligenza artificiale', ' ia ', ' ai ', 'chatgpt', 'automazion', 'algoritm']],
+    sicurezza: ['Sicurezza digitale', 'lucchetto scudo chiave impronta occhio notifica', ['sicurezz', 'privacy', 'hacker', 'password', 'truff', 'frode']],
+    internet: ['Internet', 'wifi globo cloud ricerca posta condividi', ['internet', ' web', 'online', ' sito', 'connession']],
+    social: ['Social', 'pollice hashtag condividi chat fotocamera play', ['social', 'instagram', 'tiktok', 'follower', ' like', ' post', ' reel', 'influencer']],
+    comunicazione: ['Comunicazione', 'megafono chat posta notifica microfono altoparlante', ['comunica', 'messagg', 'annunc', 'pubblicit', 'parlare']],
+    salute: ['Salute', 'cuore croce pillola termometro mela goccia', ['salute', 'medic', 'malatt', 'sintom', 'ospedal', 'benessere', 'sonno', 'dormire']],
+    medicina: ['Medicina', 'siringa pillola dna provetta croce termometro', ['farmac', 'vaccin', 'terapi', 'cura ', 'cure ', 'dottor']],
+    sport: ['Sport', 'pallone coppa medaglia manubrio bandiera orologio', ['sport', 'calcio', 'palestra', 'allen', 'partita', ' gara', 'corsa', 'atlet']],
+    cibo: ['Cibo', 'mela posate pizza tazza bottiglia carrello', ['cibo', 'mangi', 'alimentaz', 'dieta', 'ricett', 'cucin', 'ristorant', 'colazion']],
+    casa: ['Casa', 'casa divano lampadina pianta chiave presa', [' casa', 'arred', 'affitt', 'trasloc', 'bollett', 'condomin']],
+    immobiliare: ['Immobiliare', 'casa palazzo chiave mappa documento euro', ['immobil', 'mutuo', 'appartament', 'compravendit', 'agenzia']],
+    viaggi: ['Viaggi', 'aereo valigia globo mappa bussola montagna', ['viagg', 'vacanz', 'turism', ' volo', 'hotel', 'ferie', 'estero']],
+    trasporti: ['Trasporti', 'auto bici treno nave carburante mappa', ['traspor', 'traffico', 'mobilit', ' auto', 'treno', 'bici', 'pendolar']],
+    lavoro: ['Lavoro', 'valigetta documento calendario grafico gruppo laptop', ['lavor', 'ufficio', 'carriera', 'colloqui', 'aziend', 'impres', 'capo ']],
+    formazione: ['Formazione', 'laurea libro matita lavagna lampadina calcolatrice', ['scuola', 'studi', 'universit', 'esame', ' corso', 'impar', 'formazion', 'insegn']],
+    scienza: ['Scienza', 'atomo provetta dna razzo lampadina ricerca', ['scienz', 'ricerca', 'esperiment', 'fisic', 'chimic', 'scopert']],
+    ambiente: ['Ambiente', 'foglia albero riciclo goccia sole montagna', ['ambient', 'clima', 'inquin', 'sostenib', 'ecolog', 'natura', 'green']],
+    energia: ['Energia', 'fulmine batteria sole pannello pala presa', ['energi', 'elettric', 'solare', 'rinnovabil', ' gas', 'consumi']],
+    meteo: ['Meteo', 'sole pioggia neve cloud termometro albero', ['meteo', 'pioggia', 'neve', 'caldo', 'freddo', 'estate', 'invern']],
+    shopping: ['Shopping', 'carrello borsa etichetta carta pacco negozio', ['shopping', 'acquist', 'negozi', 'sconto', 'saldi', 'offert', 'prezz']],
+    ecommerce: ['E-commerce', 'pacco carrello laptop carta posta mappa', ['e-commerce', 'ecommerce', 'spedizion', 'ordin', 'consegn', 'amazon']],
+    finanza: ['Finanza personale', 'salvadanaio banca euro grafico carta calcolatrice', ['soldi', 'risparm', 'banca', ' conto', 'budget', 'spese', 'debit', 'prestit']],
+    pagamenti: ['Pagamenti', 'carta telefono euro lucchetto banca etichetta', ['pagament', 'carta di credito', 'bonifico', 'paypal', 'contactless']],
+    legale: ['Legale', 'bilancia documento penna lucchetto palazzo chiave', ['legge', 'legal', 'contratt', 'avvocat', 'diritt', 'tribunal', 'norm', 'multa']],
+    famiglia: ['Famiglia', 'gruppo bambino casa cuore regalo calendario', ['famigli', 'figli', 'genitor', 'bambin', 'matrimon', 'coppia']],
+    animali: ['Animali', 'zampa pesce cuore casa pianta goccia', ['animal', ' cane', 'gatto', 'veterinar', ' pet']],
+    musica: ['Musica', 'nota cuffie microfono altoparlante play stella', ['music', 'canzon', 'concert', ' band', 'cantant', 'playlist', 'spotify']],
+    video: ['Foto e video', 'fotocamera videocamera play tavolozza stella occhio', ['foto', 'video', ' film', 'cinema', 'youtube', 'montaggio']],
+    arte: ['Arte e design', 'tavolozza matita stella lampadina occhio libro', [' arte', 'design', 'disegn', 'creativ', 'grafica', 'colore']],
+    giochi: ['Giochi', 'dado controller puzzle coppa stella play', ['gioc', 'videogam', 'gaming', ' game', 'puzzle']],
+    moda: ['Moda', 'maglietta borsa etichetta stella fotocamera carrello', [' moda', 'vestit', 'abbigliament', ' stile', 'scarpe', 'outfit']],
+    produttivita: ['Produttività', 'orologio calendario clessidra lampadina ingranaggio documento', ['produttiv', 'organizz', 'abitudin', 'focus', 'scadenz', 'routine', 'tempo']],
+    eventi: ['Eventi', 'regalo calendario nota stella bandiera fuoco', ['event', 'festa', 'compleann', 'natale', 'celebraz']],
+    industria: ['Industria', 'fabbrica ingranaggio fulmine pacco palazzo carburante', ['industri', 'fabbric', 'produzion', 'manifattur', 'logistic']],
+    innovazione: ['Innovazione', 'razzo atomo stella globo lampadina chip', ['spazio', 'nasa', 'pianet', 'razzo', 'innovaz', 'futuro', 'startup']],
+    marketing: ['Marketing', 'megafono bersaglio grafico pollice hashtag lampadina', ['marketing', 'clienti', 'vendit', 'campagn', ' brand', 'pubblicit']],
+  }
+  var GENERIC = 'lampadina stella persona gruppo bersaglio orologio'
+  /** The domain a video talks about: its words, plus the icons its words call. '' when none. */
+  function domainOf(text) {
+    var low = ' ' + String(text || '').toLowerCase() + ' ', hit = {}, best = '', bs = 0
+    iconsFor(text, 12).forEach(function (x) { hit[x.id] = 1 })
+    Object.keys(DOMAINS).forEach(function (d) {
+      var D = DOMAINS[d], s = 0
+      D[2].forEach(function (k) { if (low.indexOf(k) >= 0) s += 2 })
+      D[1].split(' ').forEach(function (id) { if (hit[id]) s++ })
+      if (s > bs) { bs = s; best = d }
     })
-    if (n === 2 && sh.link === 'vs') withT(450, cy, back(prog(t, 0.5, 0.9)) * (1 + 0.05 * sin(t * 5)), function () { circ(0, 0, 62); fill('#fff'); label('VS', 48, P.navy, 0, 0) })
+    return best
+  }
+  /** The two sides of a comparison: consecutive icons with "o / e / vs / contro" between their words ("IA locale o server"), else the first two. */
+  function sidesOf(ic, line) {
+    var low = String(line).toLowerCase(), pos = ic.map(function (x) { return x.label ? low.indexOf(x.label.toLowerCase()) : -1 })
+    for (var i = 0; i + 1 < ic.length; i++) if (pos[i] >= 0 && pos[i + 1] > pos[i] && /\s(o|e|vs\.?|contro|oppure|invece|mentre|rispetto a)\s/.test(low.slice(pos[i], pos[i + 1]))) return [ic[i], ic[i + 1]]
+    return ic.slice(0, 2)
+  }
+  /** The chapter's icons cut or filled up to what the layout shows, the domain lending the missing ones (no label). */
+  function fitIcons(ic, layout, dom) {
+    var L = LAYOUTS[layout], out = ic.slice(0, L[2]), have = {}
+    out.forEach(function (x) { have[x.id] = 1 })
+    ;((DOMAINS[dom] ? DOMAINS[dom][1] : GENERIC) + ' ' + GENERIC).split(' ').forEach(function (id) { if (out.length < L[1] && !have[id] && ICONS[id]) { have[id] = 1; out.push({ id: id, label: '' }) } })
+    return out
+  }
+  /** Every named scene: the 18 money scenes plus layout × domain. */
+  function catalog() {
+    var out = IDS.filter(function (id) { return id !== 'icone' }).map(function (id) { return { id: id, name: META[id][0] } })
+    Object.keys(DOMAINS).forEach(function (d) { Object.keys(LAYOUTS).forEach(function (l) { out.push({ id: d + '.' + l, name: DOMAINS[d][0] + ' · ' + LAYOUTS[l][0] }) }) })
+    return out
+  }
+
+  /* ---------- drawing the layouts (900×900, t from 0 while the line is spoken) ---------- */
+  function palette6() { return [P.green, P.blue, P.gold, P.purple, P.teal, P.red] }
+  /** An icon on its rounded tile: s = scale (1 = 260 px), al = alpha. */
+  function tile(x, y, s, id, col, t, al) {
+    if (al <= 0 || s <= 0.01) return
+    c.save(); c.globalAlpha *= clamp01(al); c.translate(x, y); c.scale(s, s)
+    glow(0, 0, 200, col, 0.22)
+    rr(-130, -130, 260, 260, 64); fill(grad(P.steelHi, P.panel, -130, -130, 260, 260)); stroke(A(col, 0.9), 7)
+    c.scale(0.92, 0.92); (ICONS[id] || ICONS.lampadina)(col, t)
+    c.restore()
+  }
+  function tagT(text, x, y, size, maxW, al) { if (!text || al <= 0) return; c.save(); c.globalAlpha *= clamp01(al); label(text, size, '#fff', x, y, maxW); c.restore() }
+  function okMark(x, y, r, p) { if (p <= 0) return; withT(x, y, back(clamp01(p)), function () { circ(0, 0, r); fill(P.green); poly([[-r * 0.45, 0], [-r * 0.1, r * 0.35], [r * 0.5, -r * 0.35]], clamp01(p * 1.5), '#fff', r * 0.24) }) }
+  function noMark(x, y, r, p) { if (p <= 0) return; withT(x, y, back(clamp01(p)), function () { circ(0, 0, r); fill(P.red); var d = r * 0.38; path([[-d, -d], [d, d]]); stroke('#fff', r * 0.22, 'round'); path([[d, -d], [-d, d]]); stroke('#fff', r * 0.22, 'round') }) }
+  function arrowTo(x1, y1, x2, y2, col, w, p) {
+    p = clamp01(p); if (p <= 0) return
+    var x = lerp(x1, x2, p), y = lerp(y1, y2, p), a = Math.atan2(y2 - y1, x2 - x1)
+    path([[x1, y1], [x, y]]); stroke(col, w, 'round')
+    path([[x + cos(a) * w * 1.4, y + sin(a) * w * 1.4], [x + cos(a + 2.4) * w * 2.2, y + sin(a + 2.4) * w * 2.2], [x + cos(a - 2.4) * w * 2.2, y + sin(a - 2.4) * w * 2.2]], true); fill(col)
+  }
+  function lane(t, x1, x2, y, col, rev, al) { // a dashed wire with packets running along it
+    if (al <= 0) return
+    c.save(); c.globalAlpha *= al
+    c.setLineDash([14, 14]); c.lineDashOffset = (rev ? 1 : -1) * t * 40
+    path([[x1, y], [x2, y]]); stroke(A(WH, 0.35), 6, 'round'); c.setLineDash([])
+    for (var j = 0; j < 3; j++) {
+      var p = frac(t * 0.6 + j / 3), x = rev ? lerp(x2, x1, p) : lerp(x1, x2, p)
+      c.save(); c.globalAlpha *= Math.min(1, p * 6, (1 - p) * 6); rr(x - 18, y - 12, 36, 24, 9); fill(col); c.restore()
+    }
+    c.restore()
+  }
+  function row(vs) { // 1-3 tiles in a row, wired with packets, or A VS B
+    return function (t, dur, ic) {
+      var n = Math.min(3, ic.length), cl = palette6(), cy = n === 1 ? 400 : 420
+      var pos = n === 1 ? [[450, cy]] : n === 2 ? [[205, cy], [695, cy]] : [[150, cy], [450, cy], [750, cy]]
+      var s = n === 1 ? 1.5 : n === 2 ? 1.15 : 0.8, wires = ease(prog(t, 0.55, 0.9)), half = 130 * s + 14
+      if (n === 1) for (var k = 0; k < 3; k++) { var ph = frac(t * 0.6 + k / 3); ring(450, cy, 220 + 200 * ph, A(cl[0], (1 - ph) * 0.4), 8) }
+      if (n > 1 && !vs) for (var w = 0; w < n - 1; w++) {
+        lane(t, pos[w][0] + half, pos[w + 1][0] - half, cy - 26, cl[w], false, wires)
+        lane(t, pos[w][0] + half, pos[w + 1][0] - half, cy + 26, cl[w + 1], true, wires)
+      }
+      for (var i = 0; i < n; i++) {
+        var pop = back(prog(t, 0.08 + i * 0.2, 0.55 + i * 0.2))
+        tile(pos[i][0], pos[i][1] + sin(t * 2 + i * 1.7) * 6, pop * s, ic[i].id, cl[i], t + i, 1)
+        tagT(ic[i].label, pos[i][0], pos[i][1] + 130 * s + 52, n === 3 ? 40 : 48, n === 3 ? 270 : 400, pop)
+      }
+      if (n === 2 && vs) withT(450, cy, back(prog(t, 0.5, 0.9)) * (1 + 0.05 * sin(t * 5)), function () { circ(0, 0, 62); fill('#fff'); label('VS', 48, P.navy, 0, 0) })
+    }
+  }
+  function bars(up) {
+    return function (t, dur, ic) {
+      var col = up ? P.green : P.red, hs = up ? [130, 200, 270, 360, 460] : [460, 360, 270, 200, 130]
+      for (var i = 0; i < 5; i++) { var hh = hs[i] * ease(prog(t, 0.2 + i * 0.15, 0.7 + i * 0.15)); if (hh > 1) { rr(120 + i * 135, 770 - hh, 100, hh, 14); fill(i === 4 ? col : A(WH, 0.14 + i * 0.05)) } }
+      arrowTo(150, up ? 600 : 170, 520, up ? 200 : 520, A(col, 0.9), 14, ease(prog(t, 0.6, 1.4)))
+      var p = back(prog(t, 1, 1.4)), top = 770 - hs[4] * ease(prog(t, 0.8, 1.3))
+      tile(660, top - 100, 0.62 * p, ic[0].id, col, t, 1)
+      tagT(ic[0].label, 450, 840, 42, 700, clamp01(p))
+    }
+  }
+  var LAY = {
+    eroe: row(false), flusso: row(false), catena: row(false), sfida: row(true), sale: bars(true), scende: bars(false),
+    hub: function (t, dur, ic) {
+      var cl = palette6(), cx = 450, cy = 430, m = Math.min(5, ic.length - 1)
+      for (var j = 0; j < m; j++) {
+        var a = -PI / 2 + j * 2 * PI / m + t * 0.12, x = cx + cos(a) * 310, y = cy + sin(a) * 290, al = ease(prog(t, 0.5 + j * 0.12, 0.9 + j * 0.12))
+        if (al <= 0) continue
+        c.save(); c.globalAlpha *= al; c.setLineDash([12, 12]); c.lineDashOffset = t * 30; path([[cx, cy], [x, y]]); stroke(A(WH, 0.3), 5); c.setLineDash([])
+        var p = frac(t * 0.7 + j / m); circ(lerp(x, cx, p), lerp(y, cy, p), 10); fill(cl[(j + 1) % 6]); c.restore()
+        tile(x, y, 0.5 * back(prog(t, 0.5 + j * 0.12, 0.9 + j * 0.12)), ic[j + 1].id, cl[(j + 1) % 6], t + j, 1)
+        tagT(ic[j + 1].label, x, y + 92, 30, 220, al)
+      }
+      var pop = back(prog(t, 0.05, 0.5)); tile(cx, cy, 0.95 * pop, ic[0].id, cl[0], t, 1); tagT(ic[0].label, cx, cy + 165, 40, 300, pop)
+    },
+    primadopo: function (t, dur, ic) {
+      var cl = palette6(), a = ease(prog(t, 0.05, 0.4)), b = back(prog(t, 0.9, 1.35))
+      tile(210, 400, 0.95, ic[0].id, '#8892A6', t, a * 0.6); noMark(312, 300, 34, ease(prog(t, 0.5, 0.8)))
+      arrowTo(350, 400, 520, 400, cl[1], 14, ease(prog(t, 0.5, 1)))
+      tile(690, 400, 1.1 * b, ic[1].id, cl[1], t, 1); okMark(805, 285, 38, ease(prog(t, 1.2, 1.6)))
+      tagT(ic[0].label || 'Prima', 210, 570, 40, 300, a * 0.7); tagT(ic[1].label || 'Dopo', 690, 595, 44, 320, clamp01(b))
+    },
+    bilancia: function (t, dur, ic) {
+      var cl = palette6(), a = ease(prog(t, 0.6, 1.5)) * 0.2 + sin(t * 2) * 0.015, pop = back(prog(t, 0, 0.4)), px = 450, py = 230, L = 260
+      path([[px, py], [px, 760]]); stroke(WH, 12, 'round'); rr(330, 750, 240, 26, 13); fill(WH)
+      var ends = [[px - cos(a) * L, py - sin(a) * L], [px + cos(a) * L, py + sin(a) * L]]
+      path(ends); stroke(WH, 12, 'round'); circ(px, py, 16); fill(cl[2])
+      ends.forEach(function (e, j) {
+        var x = e[0], y = e[1] + 170
+        path([[x, e[1]], [x - 85, y]]); stroke(A(WH, 0.5), 4); path([[x, e[1]], [x + 85, y]]); stroke(A(WH, 0.5), 4)
+        c.beginPath(); c.arc(x, y, 88, 0, PI); fill(A(cl[j], 0.85))
+        tile(x, y - 72, 0.52 * pop, ic[j].id, cl[j], t + j, 1)
+        tagT(ic[j].label, x, y + 122, 36, 280, pop)
+      })
+    },
+    griglia: function (t, dur, ic) {
+      var cl = palette6(), n = Math.min(6, ic.length), cn = n <= 4 ? 2 : 3, s = cn === 2 ? 0.82 : 0.7, xs = cn === 2 ? [270, 630] : [170, 450, 730], ys = [270, 590]
+      for (var i = 0; i < n; i++) {
+        var x = xs[i % cn], y = ys[Math.floor(i / cn)], p = back(prog(t, 0.1 + i * 0.22, 0.5 + i * 0.22))
+        tile(x, y + sin(t * 2 + i) * 4, s * p, ic[i].id, cl[i % 6], t + i, 1)
+        tagT(ic[i].label, x, y + 130 * s + 36, 32, cn === 2 ? 330 : 250, clamp01(p))
+      }
+    },
+    spunte: function (t, dur, ic) {
+      var cl = palette6(), gap = Math.max(0.5, (dur * 0.8 - 0.4) / 3)
+      for (var i = 0; i < 3; i++) {
+        var y = 200 + i * 240, e = easeOut(prog(t, i * 0.15, i * 0.15 + 0.45)), tk = 0.5 + i * gap, done = prog(t, tk, tk + 0.35)
+        if (e <= 0) continue
+        c.save(); c.globalAlpha *= e; c.translate(300 * (1 - e), 0)
+        tile(170, y, 0.62, ic[i].id, cl[i], t + i, 1)
+        if (ic[i].label) label(ic[i].label, 46, '#fff', 480, y, 380); else { rr(300, y - 22, 360, 44, 22); fill(A(WH, done > 0 ? 0.85 : 0.2)) }
+        if (done > 0) okMark(770, y, 44, done); else { circ(770, y, 44); stroke(A(WH, 0.4), 6) }
+        c.restore()
+      }
+    },
+    contatore: function (t, dur, ic, sh) {
+      var col = P.green, cy = 360, v = 1, num = String(sh.number || ''), m = num.match(/\d[\d.,]*/), f = ease(prog(t, 0.3, Math.max(1, dur * 0.7)))
+      if (/%/.test(num) && m) v = clampN(parseFloat(m[0].replace(/\./g, '').replace(',', '.')) / 100, 0.02, 1)
+      c.beginPath(); c.arc(450, cy, 250, 0, 2 * PI); stroke(A(WH, 0.12), 22)
+      if (f > 0) { c.beginPath(); c.arc(450, cy, 250, -PI / 2, -PI / 2 + 2 * PI * v * f); stroke(col, 22, 'round') }
+      tile(450, cy, 1.15 * back(prog(t, 0, 0.45)), ic[0].id, col, t, 1)
+      tagT(ic[0].label, 450, 720, 56, 700, 1) // the number itself is the chapter's big figure, drawn by the explainer beside the scene
+    },
+    pioggia: function (t, dur, ic) {
+      var cl = palette6(), lev = ease(prog(t, 0.3, Math.max(1, dur * 0.9))), top = 782 - 230 * lev
+      if (lev > 0) { rr(258, top, 384, 782 - top, [0, 0, 34, 34]); fill(A(cl[0], 0.3)) }
+      path([[250, 470], [250, 790], [650, 790], [650, 470]]); stroke(WH, 10, 'round', 'round')
+      for (var i = 0; i < 26; i++) {
+        var t0 = 0.2 + i * 0.2; if (t0 > dur) break
+        var p = prog(t, t0, t0 + 0.9); if (p <= 0 || p >= 1) continue
+        var it = ic[i % ic.length]
+        c.save(); c.translate(300 + (i * 137) % 300, lerp(-70, top - 40, easeIn(p))); c.rotate(sin(i) * 0.4); c.scale(0.32, 0.32); ICONS[it.id](cl[i % 3], t); c.restore()
+      }
+      tagT(ic[0].label, 450, 845, 42, 700, lev)
+    },
+    ciclo: function (t, dur, ic) {
+      var cl = palette6(), m = Math.min(4, ic.length), cx = 450, cy = 430, R = 270, a0 = -PI / 2 + t * 1.1
+      c.beginPath(); c.arc(cx, cy, R, 0, 2 * PI); stroke(A(WH, 0.14), 10)
+      for (var k = 0; k < 6; k++) { var a = a0 - k * 0.09; circ(cx + cos(a) * R, cy + sin(a) * R, 12 - k * 1.5); fill(A(cl[0], 1 - k * 0.15)) }
+      c.beginPath(); c.arc(cx, cy, 70, t * 2, t * 2 + PI * 1.5); stroke(cl[0], 14, 'round')
+      for (var j = 0; j < m; j++) {
+        var b = -PI / 2 + j * 2 * PI / m, x = cx + cos(b) * R, y = cy + sin(b) * R, p = back(prog(t, 0.1 + j * 0.2, 0.5 + j * 0.2))
+        tile(x, y, 0.55 * p, ic[j].id, cl[j], t + j, 1)
+        tagT(ic[j].label, x, y + (sin(b) < -0.5 ? -100 : 100), 30, 240, clamp01(p))
+      }
+    },
+    bersaglio: function (t, dur, ic) {
+      var cx = 600, cy = 380, pop = back(prog(t, 0, 0.45)), hit = Math.min(1.3, dur * 0.45), f = prog(t, 0.3, hit), since = t - hit
+      ;[200, 150, 100, 50].forEach(function (r, k) { circ(cx, cy, r * pop); fill(k % 2 ? WH : P.red) })
+      if (since > 0) ring(cx, cy, 60 + since * 420, A(P.gold, Math.max(0, 1 - since * 2)), 10)
+      var x = lerp(160, cx, easeOut(f)), y = lerp(760, cy, easeOut(f)) + (since > 0 ? sin(since * 30) * 6 * Math.exp(-since * 4) : 0)
+      tile(x, y, 0.55, ic[0].id, P.green, t, f > 0 ? 1 : 0)
+      tagT(ic[0].label, 450, 800, 44, 700, f)
+    },
+    lente: function (t, dur, ic) {
+      var col = P.blue, pop = back(prog(t, 0, 0.45)), al = ease(prog(t, 0.4, 0.8)), mx = 450 + cos(t * 1.1) * 130, my = 400 + sin(t * 1.6) * 100
+      tile(450, 400, 1.25 * pop, ic[0].id, col, t, 0.6)
+      if (al > 0) {
+        c.save(); c.globalAlpha *= al; c.beginPath(); c.arc(mx, my, 125, 0, 2 * PI); c.clip(); rr(mx - 125, my - 125, 250, 250, 0); fill(P.navy)
+        c.translate(mx, my); c.scale(1.7, 1.7); c.translate(-mx, -my); tile(450, 400, 1.25, ic[0].id, col, t, 1); c.restore()
+        c.save(); c.globalAlpha *= al; path([[mx + 92, my + 92], [mx + 180, my + 180]]); stroke(WH, 28, 'round'); ring(mx, my, 125, WH, 14); c.restore()
+      }
+      tagT(ic[0].label, 450, 800, 46, 700, pop)
+    },
+    divieto: function (t, dur, ic) {
+      var shake = t > 0.6 ? sin(t * 40) * 10 * Math.exp(-(t - 0.6) * 3) : 0, p = back(prog(t, 0.5, 0.85))
+      tile(450 + shake, 400, 1.2 * back(prog(t, 0, 0.45)), ic[0].id, P.red, t, 1)
+      if (p > 0) withT(450 + shake, 400, p, function () { ring(0, 0, 220, P.red, 34); path([[-155, -155], [155, 155]]); stroke(P.red, 34, 'butt') })
+      tagT(ic[0].label, 450, 720, 48, 700, clamp01(p))
+    },
+    timeline: function (t, dur, ic) {
+      var cl = palette6(), m = Math.min(4, ic.length), g = ease(prog(t, 0.1, 0.8)), y = 560, step = Math.max(0.3, dur * 0.6 / m)
+      path([[90, y], [90 + 700 * g, y]]); stroke(A(WH, 0.5), 8, 'round')
+      if (g >= 1) arrowTo(780, y, 820, y, A(WH, 0.5), 8, 1)
+      for (var j = 0; j < m; j++) {
+        var x = 160 + j * (580 / Math.max(1, m - 1)), p = back(prog(t, 0.4 + j * step, 0.8 + j * step))
+        if (p <= 0) continue
+        circ(x, y, 16 * clamp01(p)); fill(cl[j]); path([[x, y - 118], [x, y - 16]]); stroke(A(cl[j], 0.6), 4)
+        tile(x, y - 190, 0.55 * p, ic[j].id, cl[j], t + j, 1)
+        tagT(ic[j].label, x, y + 60, 32, 170, clamp01(p))
+      }
+    },
+    scudo: function (t, dur, ic) {
+      var col = P.green, pop = back(prog(t, 0, 0.5))
+      for (var k = 0; k < 4; k++) { // darts bouncing off the shield
+        var p = frac(t * 0.55 + k * 0.25), left = k % 2 === 0, y = 260 + k * 110, edge = left ? 150 : 750, start = left ? -60 : 960, dirIn = p < 0.6
+        var x = dirIn ? lerp(start, edge, p / 0.6) : lerp(edge, start + (left ? 120 : -120), (p - 0.6) / 0.4)
+        c.save(); c.globalAlpha *= dirIn ? 1 : 1 - (p - 0.6) / 0.4; c.translate(x, y + (dirIn ? 0 : -(p - 0.6) * 300)); c.scale(left === dirIn ? 1 : -1, 1)
+        path([[-70, 0], [0, 0]]); stroke(P.red, 10, 'round'); path([[0, -18], [26, 0], [0, 18]], true); fill(P.red); c.restore()
+      }
+      withT(450, 430, pop * 1.25, function () {
+        c.beginPath(); c.moveTo(0, -300); c.quadraticCurveTo(120, -230, 240, -220); c.quadraticCurveTo(250, 160, 0, 320); c.quadraticCurveTo(-250, 160, -240, -220); c.quadraticCurveTo(-120, -230, 0, -300)
+        fill(A(col, 0.14)); stroke(A(col, 0.9), 10)
+      })
+      tile(450, 410, 0.9 * pop, ic[0].id, col, t, 1)
+      tagT(ic[0].label, 450, 600, 44, 420, pop)
+    },
+    onda: function (t, dur, ic) {
+      var cl = palette6(), cx = 450, cy = 300, m = Math.min(3, ic.length - 1), xs = m === 1 ? [450] : m === 2 ? [280, 620] : [180, 450, 720]
+      for (var k = 0; k < 3; k++) { var ph = frac(t * 0.7 + k / 3); ring(cx, cy, 110 + 330 * ph, A(cl[0], (1 - ph) * 0.5), 8) }
+      var pop = back(prog(t, 0, 0.45)); tile(cx, cy, 0.85 * pop, ic[0].id, cl[0], t, 1); tagT(ic[0].label, cx, cy + 150, 40, 400, pop)
+      for (var j = 0; j < m; j++) {
+        var p = back(prog(t, 0.7 + j * 0.25, 1.1 + j * 0.25))
+        tile(xs[j], 690, 0.48 * p, ic[j + 1].id, cl[(j + 1) % 6], t + j, 1)
+        tagT(ic[j + 1].label, xs[j], 690 + 96, 30, 220, clamp01(p))
+      }
+    },
+    scala: function (t, dur, ic) {
+      var cl = palette6(), m = Math.min(3, ic.length), e = clamp01(t / Math.max(1, dur * 0.85)) * (m - 1)
+      for (var i = 0; i < m; i++) {
+        var x0 = 120 + i * 220, h = (i + 1) * 150, g = ease(prog(t, i * 0.15, i * 0.15 + 0.5)), top = 760 - h
+        if (g > 0) { rr(x0, 760 - h * g, 220, h * g, [16, 16, 0, 0]); fill(A(cl[i], 0.25 + i * 0.12)) }
+        tile(x0 + 110, top - 90, 0.55 * back(prog(t, 0.3 + i * 0.2, 0.7 + i * 0.2)), ic[i].id, cl[i], t + i, e + 0.001 >= i ? 1 : 0.45)
+        tagT(ic[i].label, x0 + 110, top + 40, 32, 200, g)
+      }
+      if (e >= m - 1) glow(120 + (m - 1) * 220 + 110, 760 - m * 150 - 90, 200, P.gold, 0.4)
+    },
+    unione: function (t, dur, ic) {
+      var cl = palette6(), mg = ease(prog(t, 0.6, 1.3)), done = back(prog(t, 1.3, 1.7)), al = 1 - clamp01(done)
+      if (al > 0) {
+        tile(lerp(200, 400, mg), 400, 0.7, ic[0].id, cl[0], t, al); tile(lerp(700, 500, mg), 400, 0.7, ic[1].id, cl[1], t + 1, al)
+        if (mg < 0.5) withT(450, 400, back(prog(t, 0.3, 0.6)) * (1 - mg * 2), function () { circ(0, 0, 44); fill('#fff'); label('+', 64, P.navy, 0, 4) })
+        tagT(ic[0].label, 200, 560, 36, 260, al * (1 - mg)); tagT(ic[1].label, 700, 560, 36, 260, al * (1 - mg))
+      }
+      if (done > 0) { glow(450, 400, 300 * clamp01(done), cl[2], 0.4); tile(450, 400, 1.15 * done, ic[2].id, cl[2], t, 1); tagT(ic[2].label, 450, 600, 46, 600, clamp01(done)) }
+    },
+  }
+
+  S.icone = function (t, dur, sh) {
+    var ic = (sh.icons || []).filter(function (x) { return ICONS[x.id] })
+    if (!ic.length) ic = [{ id: 'lampadina', label: '' }]
+    var L = LAYOUTS[sh.layout] ? sh.layout : ic.length >= 3 ? 'catena' : ic.length === 2 ? (sh.link === 'vs' ? 'sfida' : 'flusso') : 'eroe'
+    if (ic.length < LAYOUTS[L][1]) ic = fitIcons(ic, L, '') // a hand-written config may give fewer icons than the layout shows
+    LAY[L](t, dur, ic, sh)
   }
   /* the owner's preset (template-originale.html), kept verbatim: it is the reference for mode race */
   var RACE_SAMPLE = {
@@ -1027,9 +1510,11 @@
       if (caption) o.caption = caption
       // the "?" scene only opens the video: a later chapter answers, so its scene comes from the answer
       if (mode === 'explainer') {
-        var ic = iconList(ch.icons)
-        o.scene = ic.length ? 'icone' : META[ch.scene] && !(i && ch.scene === 'domanda') ? ch.scene : guess(answer, i ? '' : 'hook', prev); prev = o.scene
-        if (ic.length) o.icons = ic // after scene: validate(validate(x)) keeps the same key order
+        // icons, a layout, or a catalogue scene "dominio.layout" all mean the icon scene; the post-pass fills the rest
+        var ic = iconList(ch.icons), sc = String(ch.scene || ''), dot = sc.split('.')
+        var lay = LAYOUTS[ch.layout] ? ch.layout : LAYOUTS[dot[1]] ? dot[1] : LAYOUTS[sc] ? sc : ''
+        o.scene = ic.length || lay ? 'icone' : META[ch.scene] && !(i && ch.scene === 'domanda') ? ch.scene : guess(answer, i ? '' : 'hook', prev); prev = o.scene
+        if (o.scene === 'icone') { o._ic = ic; o._lay = lay; o._dom = DOMAINS[dot[0]] ? dot[0] : '' }
       }
       if (DATA[mode]) { o.startIdx = Math.round(num(ch.startIdx, NaN)); o.endIdx = Math.round(num(ch.endIdx, NaN)) }
       return o
@@ -1063,11 +1548,18 @@
     if (mode === 'explainer') { // not about money: coins, ETFs and stock charts would mislead, so the topic's own icons
       var lineOf = function (ch) { return ch.title + ' ' + plain(ch.html) + ' ' + (ch.q || '') } // title first: its words pick the icons
       var talk = chapters.filter(function (ch) { return moneyTalk(lineOf(ch)) }).length
-      if (talk < Math.max(1, Math.ceil(chapters.length / 3)) && !moneyTalk(intro.title)) chapters.forEach(function (ch, i) {
-        if (NEUTRAL[ch.scene] && !(i && ch.scene === 'domanda')) return
-        var ic = iconsFor(lineOf(ch), 2)
-        ch.icons = ic.length ? ic : [{ id: 'lampadina', label: '' }]
-        ch.scene = 'icone'
+      var noMoney = talk < Math.max(1, Math.ceil(chapters.length / 3)) && !moneyTalk(intro.title)
+      var dom = domainOf(intro.title + ' ' + chapters.map(lineOf).join(' ')), prevL = ''
+      chapters.forEach(function (ch, i) {
+        var line = lineOf(ch)
+        if (noMoney && !(NEUTRAL[ch.scene] && !(i && ch.scene === 'domanda'))) ch.scene = 'icone'
+        var guessed = !(ch._ic && ch._ic.length), ic = !guessed ? ch._ic : ch.scene === 'icone' ? iconsFor(line, 3) : [], L = ch._lay, d = ch._dom || dom
+        delete ch._ic; delete ch._lay; delete ch._dom; delete ch.icons; delete ch.layout
+        if (ch.scene !== 'icone') { prevL = ''; return }
+        L = L || layoutFor(line, ic.length || 1, prevL, i, /\d/.test(ch.big || ''))
+        if (guessed && LAYOUTS[L][2] === 2 && ic.length > 2) ic = sidesOf(ic, line)
+        ch.icons = fitIcons(ic, L, d) // icons then layout: validate(validate(x)) keeps the same key order
+        ch.layout = prevL = L
       })
     }
     out.chapters = chapters
@@ -1104,7 +1596,7 @@
     var dm = low.match(/\b([1-9]|[12]\d|3[01])\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)/)
     var ym = low.match(/\b(\d{1,2})\s+anni\b/)
     return { title: title, alt: alt, number: /\d/.test(ch.big || '') ? ch.big : numberIn(text), day: dm ? +dm[1] : 0, years: ym && +ym[1] >= 1 && +ym[1] <= 60 ? +ym[1] : 0,
-      icons: ch.icons || [], link: /(\bvs\b|\bcontro\b|invece|mentre|oppure|differenz|confront)/.test(low) ? 'vs' : 'flow' }
+      icons: ch.icons || [], layout: ch.layout || '', link: /(\bvs\b|\bcontro\b|invece|mentre|oppure|differenz|confront)/.test(low) ? 'vs' : 'flow' }
   }
   /** opts.durations (optional, final seconds, e.g. the real voice measured at opts.speed): {intro, chapters: [], provocation, cta}; without them time comes from word count.
       opts.speed (1–2, default config.speed or 1) divides every estimated duration and the animation pacing: 2 = half as long. */
@@ -2720,10 +3212,20 @@
       { title: 'Locale: sul dispositivo. Server: la richiesta viaggia', html: 'In locale il modello gira sul telefono.', scene: 'distribuzione' },
       { title: 'Potenza: i server usano modelli più grandi', html: 'Hardware enorme.', scene: 'crescita' },
       { title: 'Connessione e costi', html: 'Il locale funziona anche offline.', scene: 'commissioni' }] })
-    ok(tech.chapters.every(function (x) { return x.scene === 'icone' && x.icons.length }) && tech.chapters[0].icons.map(function (x) { return x.id + ':' + x.label }).join() === 'telefono:Locale,server:Server', 'tech icons: ' + JSON.stringify(tech.chapters.map(function (x) { return x.icons })))
+    ok(tech.chapters.every(function (x) { return x.scene === 'icone' && x.icons.length && LAYOUTS[x.layout] }) && tech.chapters[0].icons.slice(0, 2).map(function (x) { return x.id + ':' + x.label }).join() === 'telefono:Locale,server:Server' && tech.chapters[0].layout !== tech.chapters[1].layout && tech.chapters[1].layout !== tech.chapters[2].layout, 'tech icons: ' + JSON.stringify(tech.chapters.map(function (x) { return x.icons })))
     var asked = validate({ mode: 'explainer', chapters: [{ title: 'Un titolo', icons: ['cloud:Cloud', 'nonesiste', { id: 'Lucchetto', label: 'Privacy' }] }] }).chapters[0]
     ok(asked.scene === 'icone' && asked.icons.length === 2 && asked.icons[1].id === 'lucchetto' && asked.icons[1].label === 'Privacy', 'icons from the AI: ' + JSON.stringify(asked.icons))
-    ok(validate(tech).chapters[0].icons.length === 2, 'icons survive a second validate')
+    ok(JSON.stringify(validate(tech)) === JSON.stringify(tech), 'icons and layouts survive a second validate')
+    // the catalogue: layouts called by the chapter's words, filled from the topic's domain, named scenes "dominio.layout"
+    var cue = validate({ mode: 'explainer', chapters: [{ title: 'Evita le password deboli', icons: ['lucchetto'] }] }).chapters[0]
+    ok(cue.layout === 'divieto' && cue.icons.length === 1, 'layout from cue words: ' + JSON.stringify(cue))
+    var hubc = validate({ mode: 'explainer', intro: { title: 'Lo smartphone' }, chapters: [{ title: 'Tutto in un posto', icons: ['telefono:Telefono'], layout: 'hub' }] }).chapters[0]
+    ok(hubc.layout === 'hub' && hubc.icons.length === 5 && hubc.icons[0].label === 'Telefono', 'hub padded from the domain: ' + JSON.stringify(hubc.icons))
+    var named = validate({ mode: 'explainer', chapters: [{ title: 'Ogni giorno', scene: 'salute.ciclo' }] })
+    ok(named.chapters[0].scene === 'icone' && named.chapters[0].layout === 'ciclo' && named.chapters[0].icons.length >= 3 && JSON.stringify(validate(named)) === JSON.stringify(named), 'named catalogue scene: ' + JSON.stringify(named.chapters[0]))
+    var sides = validate(fromTopic('differenza tra intelligenza artificiale locale e via server').config).chapters[0]
+    ok(sides.layout === 'sfida' && sides.icons.map(function (x) { return x.id }).join() === 'telefono,server', 'comparison sides: ' + JSON.stringify(sides.icons))
+    ok(catalog().length >= 800 && Object.keys(LAYOUTS).every(function (l) { return LAY[l] }), 'catalogue size ' + catalog().length)
     ok(validate({ mode: 'explainer', chapters: [{ title: 'Ti versa i dividendi', html: 'Un ETF a distribuzione.', scene: 'distribuzione' }] }).chapters[0].scene === 'distribuzione', 'money video keeps money scenes')
     // the TER case against a hand calculation: 10.000 € at 6% gross minus TER for 20 years → 10000·1,0585^20 ≈ 31.176, 10000·1,045^20 ≈ 24.117
     var ter = fromTopic('differenza tra TER 0,15% e 1,5%').config, lastP = ter.data[ter.data.length - 1]
@@ -2745,7 +3247,9 @@
     version: 2, formats: FORMATS, modes: MODES, modeNames: MODE_NAME,
     scenes: IDS.map(function (id) { return { id: id, name: META[id][0] } }),
     validate: validate, plan: plan, draw: draw, locate: locate, fromBeats: fromBeats, fromTopic: fromTopic, guess: guess, numberIn: numberIn, plain: plain,
-    samples: SAMPLES, selfCheck: selfCheck,
+    samples: SAMPLES, selfCheck: selfCheck, catalog: catalog,
+    icons: Object.keys(ICONS), layouts: Object.keys(LAYOUTS).map(function (id) { return { id: id, name: LAYOUTS[id][0] } }),
+    domains: Object.keys(DOMAINS).map(function (id) { return { id: id, name: DOMAINS[id][0] } }),
   }
   if (typeof window !== 'undefined') window.VideoEngine = api
   if (typeof module !== 'undefined') module.exports = api
