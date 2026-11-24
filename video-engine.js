@@ -1684,6 +1684,558 @@
     })
   }
 
+  /* ---------- zero-AI generator: a topic → VIDEO_CONFIG + post draft (built-in knowledge base, real maths, no network) ---------- */
+  /* Points: [title, text, scene?, big?]; in texts {a:…} {b:…} {g:…} become hl-a / hl-b / hl-gold. '#' in titles = number of points.
+     k: keywords (normalized, matched word by word in any order, typo tolerant); a leading '~' halves the weight of a generic word.
+     Facts are general and conservative: no advice, no promised returns; figures that are not law are computed examples. */
+  var KB = [
+    { id: 'distacc', n: 'ETF a distribuzione o ad accumulo', k: ['distribuz', 'accumul', 'dividendi reinvestiti'], m: 'explainer', s: 'ETF • GUIDA BASE', tax: 1,
+      v: ['DISTRIBUZIONE vs ACCUMULO', 'STESSO ETF, DUE VERSIONI', 'DIVIDENDI: INCASSI O REINVESTI?'],
+      h: ['ETF a distribuzione o ad accumulo: quale fa per te?', 'Stesso ETF, due versioni: cambia tutto sui dividendi.', 'I dividendi del tuo ETF: li incassi o lavorano per te?'],
+      p: [['Distribuzione o accumulo?', 'Stesso indice, due versioni: cambia {g:cosa succede ai dividendi}.', 'confronto'],
+        ['I dividendi arrivano sul conto.', 'A {a:distribuzione} li incassi periodicamente e paghi subito le tasse su ciò che ricevi.', 'distribuzione'],
+        ['I dividendi restano nel fondo.', 'Ad {b:accumulo} vengono reinvestiti: le tasse le paghi quando vendi, sul guadagno.', 'accumulo'],
+        ['Nel tempo pesa il composto.', 'Reinvestire significa che {g:i dividendi producono altri rendimenti}.', 'interesse'],
+        ['Dipende da cosa ti serve.', 'Ti serve una {a:rendita} oggi o vuoi {b:far crescere} il capitale? Non c’è una scelta giusta per tutti.', 'domanda']],
+      x: 'Un ETF a distribuzione ti versa i proventi, già tassati; la versione ad accumulo li reinveste e rimanda le tasse alla vendita.',
+      r: [['Sai quali dei tuoi ETF {a:distribuiscono}?', 'E quante tasse hai pagato {g:quest’anno} sui proventi?'], ['Incassare fa piacere.', 'Ma sai quanto ti {g:costa} in tasse ogni anno?']],
+      t: ['#ETF', '#dividendi', '#investire'] },
+    { id: 'ter', n: 'TER e costi dei fondi', k: ['ter', 'spese correnti', 'costo annuo', 'costi etf', 'costi fondo', 'commissioni fondo'], m: 'race', calc: 'ter', s: 'COSTI • ESEMPIO',
+      v: ['IL COSTO CHE NON VEDI', 'TER BASSO vs TER ALTO', 'QUANTO TI COSTA DAVVERO?'],
+      h: ['Un punto di TER sembra niente. Su vent’anni no.', 'Il TER non lo paghi con un bonifico: lo paghi in rendimento.', 'Stesso mercato, stessi anni: cambia solo il costo.'],
+      p: [['Cos’è il TER.', 'È il {a:costo annuo} del fondo in percentuale: non arriva come addebito, si sottrae dal rendimento.', 'commissioni'],
+        ['Si paga sempre.', 'Anche negli anni in cui il mercato scende: {g:ogni anno}, su tutto il capitale.', 'calo'],
+        ['Il tempo lo moltiplica.', 'Quello che paghi in costi {b:non cresce più}: perdi anche il suo rendimento futuro.', 'interesse'],
+        ['Dove trovarlo.', 'Nel {a:KID} e nella scheda del fondo, alla voce costi correnti.', 'checklist']],
+      r: [['Conosci il TER', 'di {g:ogni fondo} che hai in portafoglio?'], ['Non è il mercato a pesare di più.', 'Sono i {g:costi} che non guardi.']],
+      t: ['#TER', '#ETF', '#costi'] },
+    { id: 'composto', n: 'interesse composto', k: ['interesse composto', 'compost', 'palla di neve', 'capitalizzazione', 'interessi sugli interessi'], m: 'growth', calc: 'comp', s: 'INTERESSE COMPOSTO • ESEMPIO',
+      v: ['L’INTERESSE COMPOSTO', 'LA PALLA DI NEVE', 'IL TEMPO CHE LAVORA'],
+      h: ['Perché i primi dieci anni sembrano inutili (e non lo sono).', 'Interesse composto: il guadagno che genera altro guadagno.', 'Il segreto non è quanto metti. È per quanto tempo.'],
+      p: [['Interessi sugli interessi.', 'Ogni anno il rendimento si somma al capitale e {g:l’anno dopo rende anche lui}.', 'interesse'],
+        ['All’inizio sembra poco.', 'Nei primi anni la curva è piatta: conta quasi solo {a:quello che metti}.', 'crescita'],
+        ['Poi la curva si piega.', 'Col tempo i rendimenti producono {b:altri rendimenti} e la crescita accelera.', 'tempo'],
+        ['Funziona anche al contrario.', 'Costi e debiti si compongono allo stesso modo: {g:contro di te}.', 'commissioni']],
+      r: [['Il tempo non si recupera.', 'Da quanto lo stai lasciando {g:fermo}?'], ['Non serve un colpo di fortuna.', 'Serve {g:tempo}. Lo stai usando?']],
+      t: ['#interessecomposto', '#investire', '#lungoperiodo'] },
+    { id: 'pac', n: 'PAC, piano di accumulo', k: ['pac', 'piano di accumulo', 'versamenti mensili', 'investire ogni mese', '~al mese'], m: 'growth', calc: 'pac', s: 'PAC • ESEMPIO',
+      v: ['IL PAC IN 30 SECONDI', 'POCO, MA OGNI MESE', 'LA FORZA DELLA COSTANZA'],
+      h: ['Non hai una grossa cifra da investire? Il PAC nasce per questo.', 'Investire un po’ ogni mese: cosa succede davvero.', 'Il PAC non ti rende ricco in fretta. Ti rende costante.'],
+      p: [['Cos’è un PAC.', 'Investi una {a:cifra fissa} a intervalli regolari, di solito ogni mese.', 'accumulo'],
+        ['Compri a prezzi diversi.', 'Quando il prezzo scende compri {b:più quote}, quando sale ne compri meno.', 'calo'],
+        ['Niente ansia da tempismo.', 'Non devi indovinare {g:quando entrare}: è il metodo a decidere.', 'tempo'],
+        ['Occhio ai costi per versamento.', 'Su piccole cifre {g:una commissione fissa} pesa tanto: controllala.', 'commissioni']],
+      r: [['Sai quanto stai versando', 'davvero {g:ogni mese}?'], ['La costanza batte il tempismo.', 'Ma solo se {g:non ti fermi}.']],
+      t: ['#PAC', '#pianodiaccumulo', '#ETF'] },
+    { id: 'inflazione', n: 'inflazione', k: ['inflazion', 'potere d acquisto', 'carovita', 'prezzi salgono', 'soldi fermi', 'conto corrente fermo'], m: 'stat', calc: 'infl', s: 'INFLAZIONE • ESEMPIO',
+      v: ['IL LADRO SILENZIOSO', 'SOLDI FERMI, SOLDI CHE CALANO', 'L’INFLAZIONE IN NUMERI'],
+      h: ['I soldi fermi sul conto non sono al sicuro: perdono valore.', 'Stesso numero sul conto, meno cose nel carrello.', 'L’inflazione non si vede. Ma si paga.'],
+      p: [['Cos’è l’inflazione.', 'È l’aumento generale dei prezzi: con gli stessi soldi {g:compri meno cose}.', 'calo'],
+        ['Il saldo non cambia.', 'Il numero sul conto resta uguale, ma il suo {a:potere d’acquisto} scende.', 'tempo'],
+        ['Si compone come gli interessi.', 'Anche un’inflazione bassa, anno dopo anno, {g:pesa parecchio}.', 'interesse'],
+        ['Conta il rendimento reale.', 'Guarda quanto rendi {b:al netto dell’inflazione}, non solo il numero lordo.', 'obiettivo']],
+      r: [['Il conto non scende.', 'Ma il tuo potere d’acquisto {g:sì}.'], ['Sai quanto rendono davvero', 'i tuoi soldi {g:al netto dell’inflazione}?']],
+      t: ['#inflazione', '#risparmio', '#educazionefinanziaria'] },
+    { id: 'diversificazione', n: 'diversificazione', k: ['diversific', 'tutte le uova', 'paniere', 'concentrazion', 'asset allocation', 'allocazion'], m: 'explainer', s: 'PORTAFOGLIO • RISCHIO',
+      v: ['NON TUTTE LE UOVA', 'DIVERSIFICARE DAVVERO', 'UN SOLO PANIERE?'],
+      h: ['Hai dieci titoli. Sei diversificato? Non è detto.', 'Diversificare non è comprare tanto: è comprare diverso.', 'Tutte le uova nello stesso paniere: il rischio che non vedi.'],
+      p: [['Cosa vuol dire.', 'Distribuire i soldi su {a:aree}, {b:settori} e tipi di strumenti diversi.', 'diversificazione'],
+        ['Riduce un rischio preciso.', 'Abbassa il peso del singolo titolo che va male, {g:non elimina il rischio di mercato}.', 'protezione'],
+        ['Tanti titoli simili non bastano.', 'Dieci aziende dello stesso settore {g:si muovono insieme}.', 'errore'],
+        ['Guarda il totale.', 'Fondi diversi possono contenere {a:gli stessi titoli}: controlla le sovrapposizioni.', 'app']],
+      r: [['Sai quanto pesa', 'il tuo titolo {g:più grande}?'], ['Pensi di essere diversificato.', 'Ma hai mai visto {g:il totale}?']],
+      t: ['#diversificazione', '#portafoglio', '#investire'] },
+    { id: 'minusvalenze', n: 'minusvalenze e zainetto fiscale', k: ['minusvalen', 'zainetto fiscale', 'zainetto', 'compensare perdite', 'perdite fiscali', 'plusvalen'], m: 'news', s: 'FISCO • MINUSVALENZE', tax: 1,
+      v: ['MINUSVALENZE IN SCADENZA', 'LO ZAINETTO FISCALE', 'LE PERDITE CHE VALGONO'],
+      h: ['Le tue perdite possono farti risparmiare tasse. Ma scadono.', 'Zainetto fiscale: le minusvalenze non durano per sempre.', 'Hai perso su un titolo? Quella perdita ha una scadenza.'],
+      p: [['Cosa sono.', 'Le {a:minusvalenze} sono perdite realizzate vendendo sotto il prezzo di carico.', 'minusvalenze'],
+        ['Compensano le plusvalenze.', 'Si usano contro {b:redditi diversi}, come i guadagni su azioni e obbligazioni.', 'minusvalenze'],
+        ['Hanno una scadenza.', 'Valgono fino al {g:31 dicembre del quarto anno} successivo a quello della perdita.', 'tasse', '4 anni'],
+        ['Non tutto si compensa.', 'I guadagni da {a:ETF e fondi} sono redditi di capitale: {g:non si compensano}.', 'errore']],
+      x: 'Una perdita realizzata nel 2022 si può usare fino al 31 dicembre 2026.',
+      r: [['Quante minusvalenze hai', 'che scadono {g:quest’anno}?'], ['Una perdita può valere qualcosa.', 'Solo se {g:la usi in tempo}.']],
+      t: ['#minusvalenze', '#fisco', '#zainettofiscale'] },
+    { id: 'tassazione', n: 'tasse sugli investimenti', k: ['tassazion', 'tasse investiment', 'aliquota', '26', '12 5', 'capital gain', 'imposta sostitutiva', 'tasse sui guadagni', 'redditi finanziari'], m: 'explainer', s: 'FISCO • ALIQUOTE', tax: 1,
+      v: ['26% O 12,5%?', 'LE TASSE SUI GUADAGNI', 'QUANTO TI TOCCA PAGARE'],
+      h: ['26% o 12,5%: non tutti i guadagni pagano uguale.', 'Sui tuoi guadagni finanziari quanto paghi davvero?', 'Perché i titoli di Stato pagano meno tasse?'],
+      p: [['L’aliquota base.', 'Su gran parte dei redditi finanziari si paga il {a:26%}.', 'tasse', '26%'],
+        ['L’eccezione.', 'I {b:titoli di Stato} (italiani e dei Paesi white list) pagano il {g:12,5%}.', 'tasse', '12,5%'],
+        ['E i fondi?', 'Se un fondo contiene titoli di Stato, quella parte paga {a:in proporzione} l’aliquota ridotta.', 'diversificazione'],
+        ['Chi le paga.', 'Nel {b:regime amministrato} le trattiene l’intermediario, senza che tu faccia nulla.', 'app']],
+      r: [['Sai quanto hai pagato', 'di tasse {g:quest’anno}?'], ['Due aliquote, un portafoglio.', 'Sai quale si applica {g:ai tuoi titoli}?']],
+      t: ['#tasse', '#fisco', '#investimenti'] },
+    { id: 'dividendi', n: 'dividendi', k: ['dividend', 'rendita passiva', 'reddito passivo', 'stacco cedola'], m: 'explainer', s: 'AZIONI • DIVIDENDI', tax: 1,
+      v: ['DIVIDENDI: LA VERITÀ', 'IL DIVIDENDO NON È GRATIS', 'QUANTO TI RESTA DEL DIVIDENDO'],
+      h: ['Il dividendo non è un regalo: esce dal valore dell’azione.', 'Incassi un dividendo. Quanto ti resta davvero?', 'Dividendi esteri: perché a volte paghi due volte.'],
+      p: [['Da dove arriva.', 'È una parte degli {a:utili} che l’azienda decide di distribuire ai soci.', 'distribuzione'],
+        ['Non è un regalo.', 'Allo stacco il prezzo dell’azione {g:scende più o meno di quanto paga}.', 'calo'],
+        ['Le tasse.', 'In Italia sui dividendi si paga il {a:26%}.', 'tasse', '26%'],
+        ['Quelli esteri.', 'Possono subire anche una {b:ritenuta nel Paese d’origine}, recuperabile solo in parte e con pratiche dedicate.', 'errore']],
+      r: [['Ti piace incassare.', 'Ma sai quanto ti resta {g:dopo le tasse}?'], ['Un dividendo alto', 'non è per forza {g:un buon affare}.']],
+      t: ['#dividendi', '#azioni', '#rendita'] },
+    { id: 'azobb', n: 'azioni e obbligazioni', k: ['obbligazion', 'bond', 'azionario', 'obbligazionario', 'azioni obbligazioni'], m: 'explainer', s: 'PORTAFOGLIO • BASI',
+      v: ['AZIONI vs OBBLIGAZIONI', 'SOCIO O CREDITORE?', 'DUE MESTIERI DIVERSI'],
+      h: ['Azioni o obbligazioni: socio o creditore?', 'Azioni e obbligazioni non fanno la stessa cosa nel portafoglio.', 'Più crescita o più stabilità? Ecco la differenza.'],
+      p: [['Azioni o obbligazioni?', 'Due ruoli diversi nel portafoglio: {a:crescita} e {b:stabilità}.', 'confronto'],
+        ['Con le azioni sei socio.', 'Partecipi a utili e perdite: {a:più potenziale}, ma anche {g:più oscillazioni}.', 'crescita'],
+        ['Con le obbligazioni presti.', 'Ricevi {b:cedole} e il rimborso a scadenza, se l’emittente paga.', 'distribuzione'],
+        ['Anche le obbligazioni rischiano.', 'Il prezzo scende se {g:i tassi salgono}, e l’emittente può non rimborsare.', 'calo'],
+        ['Il mix conta.', 'Quanto mettere in ciascuna dipende da {a:orizzonte} e {b:tolleranza al rischio}.', 'diversificazione']],
+      r: [['Sai quanto del tuo portafoglio', 'è in {a:azioni} e quanto in {b:obbligazioni}?']],
+      t: ['#azioni', '#obbligazioni', '#portafoglio'] },
+    { id: 'emergenza', n: 'fondo emergenze', k: ['fondo emergenz', 'emergenz', 'imprevist', 'cuscinetto', 'riserva liquida'], m: 'list', s: 'RISPARMIO • BASI',
+      v: ['IL FONDO EMERGENZE', 'PRIMA DI INVESTIRE', 'IL CUSCINETTO CHE SERVE'],
+      h: ['Prima di investire un euro, costruisci questo.', 'L’imprevisto arriva sempre. Tu sei pronto?', 'Il fondo emergenze: la base che quasi tutti saltano.'],
+      p: [['Calcola le spese.', 'Parti da quanto ti serve {a:ogni mese} per vivere davvero.', 'checklist'],
+        ['Scegli una cifra.', 'Un riferimento diffuso è {g:3–6 mesi} di spese: dipende da quanto è stabile il tuo reddito.', 'obiettivo'],
+        ['Tienilo separato.', 'Un conto a parte, {b:disponibile subito}, che non tocchi per altro.', 'protezione'],
+        ['Niente strumenti volatili.', 'Deve esserci quando serve: {g:non metterlo} dove può scendere.', 'errore'],
+        ['Ricostituiscilo.', 'Se lo usi, la priorità è {a:riportarlo} alla cifra di partenza.', 'tempo']],
+      r: [['Se domani arriva una spesa imprevista,', 'da dove {g:prendi i soldi}?']],
+      t: ['#fondoemergenza', '#risparmio', '#finanzapersonale'] },
+    { id: 'ribilanciamento', n: 'ribilanciamento', k: ['ribilanci', 'riequilibr', 'pesi del portafoglio'], m: 'explainer', s: 'PORTAFOGLIO • MANUTENZIONE',
+      v: ['RIBILANCIARE', 'IL PORTAFOGLIO SI SPOSTA', 'TORNARE AL PIANO'],
+      h: ['Il tuo portafoglio cambia da solo. Te ne sei accorto?', 'Ribilanciare: la manutenzione che quasi nessuno fa.', 'Avevi deciso 60/40. Oggi cosa hai davvero?'],
+      p: [['Il portafoglio si sposta.', 'Quello che sale {a:pesa di più}, quello che scende pesa meno.', 'diversificazione'],
+        ['Ribilanciare.', 'Vuol dire riportare i pesi all’{b:allocazione che avevi scelto}.', 'obiettivo'],
+        ['Due metodi.', 'A {a:date fisse}, per esempio una volta l’anno, o quando un peso supera {b:una soglia}.', 'tempo'],
+        ['Occhio a costi e tasse.', 'Vendere può far pagare {g:tasse sui guadagni}: si può ribilanciare anche con i nuovi versamenti.', 'tasse']],
+      r: [['Sai quanto pesa oggi', 'ogni parte del tuo {g:portafoglio}?']],
+      t: ['#ribilanciamento', '#assetallocation', '#portafoglio'] },
+    { id: 'orizzonte', n: 'orizzonte temporale', k: ['orizzont', 'lungo periodo', 'breve periodo', 'quando mi servono'], m: 'explainer', s: 'PIANIFICAZIONE • TEMPO',
+      v: ['L’ORIZZONTE TEMPORALE', 'QUANDO TI SERVONO?', 'IL TEMPO DECIDE'],
+      h: ['Prima di chiederti cosa comprare, chiediti quando ti servono i soldi.', 'Lo stesso investimento può essere adatto o no. Dipende dal tempo.', 'Orizzonte temporale: la domanda che viene prima di tutto.'],
+      p: [['Cos’è.', 'È {a:quanto tempo} puoi lasciare investiti i soldi prima di usarli.', 'tempo'],
+        ['Orizzonte breve.', 'Soldi che servono presto {g:non dovrebbero oscillare} troppo.', 'protezione'],
+        ['Orizzonte lungo.', 'Più tempo significa più margine per {b:assorbire i ribassi}.', 'crescita'],
+        ['Obiettivi diversi, tempi diversi.', 'Casa, pensione, vacanza: {a:ognuno ha il suo} orizzonte.', 'obiettivo']],
+      r: [['Sai già', 'quando ti serviranno {g:quei soldi}?']],
+      t: ['#orizzontetemporale', '#investire', '#pianificazione'] },
+    { id: 'rischio', n: 'rischio e volatilità', k: ['volatilit', 'rischio', 'oscillazion', 'drawdown', 'profilo di rischio'], m: 'explainer', s: 'RISCHIO • BASI',
+      v: ['RISCHIO E VOLATILITÀ', 'QUANTO OSCILLA?', 'IL RISCHIO SI SCEGLIE'],
+      h: ['Volatilità e rischio non sono la stessa cosa.', 'Quanto saresti disposto a veder scendere il tuo portafoglio?', 'Il rischio non si elimina. Si sceglie.'],
+      p: [['Volatilità.', 'Misura {a:quanto oscillano} i prezzi, su e giù.', 'calo'],
+        ['Rischio.', 'È la possibilità di {g:perdere} o di non raggiungere il tuo obiettivo.', 'errore'],
+        ['Il momento peggiore.', 'Guarda quanto è sceso in passato nel punto più basso: {b:sapresti reggerlo}?', 'calo'],
+        ['Rischio e rendimento.', 'Un rendimento atteso più alto {g:non arriva senza più rischio}.', 'obiettivo']],
+      r: [['Se domani perdessi il 20%,', 'resteresti {g:calmo}?']],
+      t: ['#rischio', '#volatilità', '#investire'] },
+    { id: 'errori', n: 'errori da evitare quando investi', k: ['errori', 'sbagli', 'evitare', 'errore'], m: 'list', s: 'INVESTIRE • ERRORI',
+      v: ['# ERRORI DA EVITARE', 'GLI ERRORI CHE COSTANO', 'NON FARLO'],
+      h: ['# errori che fanno perdere soldi a chi investe.', 'L’errore più caro non è scegliere male. È uno di questi.', 'Stai facendo uno di questi # errori?'],
+      p: [['Inseguire i rendimenti passati.', 'Chi è salito di più {g:non garantisce} di continuare a farlo.', 'crescita'],
+        ['Ignorare i costi.', 'Un {a:TER alto} pesa ogni anno, per sempre.', 'commissioni'],
+        ['Vendere nel panico.', 'Uscire dopo un crollo {g:trasforma una discesa in una perdita}.', 'calo'],
+        ['Non diversificare.', 'Tutto su un titolo o un settore è {b:una scommessa}, non un piano.', 'diversificazione'],
+        ['Non sapere cosa hai.', 'Senza una visione d’insieme {a:non puoi decidere} bene.', 'app'],
+        ['Investire soldi che ti servono.', 'Senza un {b:fondo emergenze} ogni imprevisto ti costringe a vendere.', 'protezione']],
+      r: [['Quanti di questi errori', 'hai fatto {g:quest’anno}?'], ['Non serve essere geniali.', 'Basta {g:non sbagliare} le cose semplici.']],
+      t: ['#errori', '#investire', '#educazionefinanziaria'] },
+    { id: 'previdenza', n: 'TFR e fondo pensione', k: ['pension', 'tfr', 'previdenz', 'fondo pensione', 'liquidazione'], m: 'explainer', s: 'PREVIDENZA • TFR', tax: 1,
+      v: ['TFR E FONDO PENSIONE', 'LA PENSIONE CHE COSTRUISCI', 'IL TFR DOVE VA?'],
+      h: ['Il tuo TFR: in azienda o in un fondo pensione?', 'La pensione integrativa ha vantaggi fiscali che pochi conoscono.', 'Sai dove finisce il tuo TFR ogni anno?'],
+      p: [['Il TFR.', 'Ogni anno una parte della retribuzione si accantona come {a:trattamento di fine rapporto}.', 'accumulo'],
+        ['Puoi destinarlo a un fondo.', 'Il TFR può andare alla {b:previdenza complementare} invece che restare in azienda.', 'obiettivo'],
+        ['Il vantaggio in entrata.', 'I contributi sono {g:deducibili} dal reddito, entro un tetto annuo fissato dalla legge.', 'tasse'],
+        ['Il vantaggio in uscita.', 'Sulle prestazioni si paga dal {a:15%}, che scende fino al {g:9%} con gli anni di adesione.', 'tasse', '15% → 9%']],
+      r: [['Sai quanto TFR hai maturato', 'e {g:dove sta lavorando}?']],
+      t: ['#TFR', '#fondopensione', '#previdenza'] },
+    { id: 'contodeposito', n: 'conti deposito', k: ['conto deposito', 'conti deposito', 'deposito vincolato', 'conto remunerato', '~liquidita'], m: 'explainer', s: 'LIQUIDITÀ • CONTI', tax: 1,
+      v: ['IL CONTO DEPOSITO', 'LIQUIDITÀ CHE RENDE?', 'VINCOLATO O LIBERO?'],
+      h: ['Conto deposito: cosa controllare prima di aprirlo.', 'La liquidità ferma può rendere qualcosa. Ma leggi bene.', 'Vincolato o libero: la differenza che conta.'],
+      p: [['Cos’è.', 'Un conto su cui la banca ti riconosce {a:interessi} per la liquidità depositata.', 'accumulo'],
+        ['Vincolato o libero.', 'Vincolato di solito rende di più, ma {g:blocchi i soldi} per un periodo.', 'tempo'],
+        ['Le tasse.', 'Sugli interessi si paga il {a:26%}, più l’{b:imposta di bollo} dello 0,20% annuo.', 'tasse', '26%'],
+        ['La garanzia.', 'Il fondo di tutela dei depositi copre fino a {g:100.000 €} per depositante, per banca.', 'protezione', '100.000 €']],
+      r: [['Quanto rende davvero la tua liquidità', '{g:dopo tasse e bollo}?']],
+      t: ['#contodeposito', '#liquidità', '#risparmio'] },
+    { id: 'cripto', n: 'criptovalute', k: ['cripto', 'crypto', 'bitcoin', 'ethereum', 'blockchain', 'altcoin', 'stablecoin'], m: 'list', s: 'CRIPTO • RISCHI', tax: 1,
+      v: ['CRIPTO: I RISCHI VERI', 'PRIMA DI COMPRARE CRIPTO', 'NON È SOLO UN GRAFICO'],
+      h: ['Prima di comprare cripto, guarda questi rischi.', 'Cripto: quello che nei video non ti dicono.', 'Sale in fretta. Scende ancora più in fretta.'],
+      p: [['Volatilità estrema.', 'Cali molto forti in poco tempo {g:sono già successi più volte}.', 'calo'],
+        ['Nessuna garanzia.', 'Non c’è un fondo che {a:ti rimborsa} se una piattaforma fallisce.', 'protezione'],
+        ['La custodia.', 'Chi ha le {b:chiavi} ha le cripto: perderle può voler dire perdere tutto.', 'errore'],
+        ['Le truffe.', 'Rendimenti garantiti e guru sui social sono {g:segnali d’allarme}.', 'errore'],
+        ['Anche il fisco conta.', 'I guadagni vanno {a:dichiarati e tassati}: verifica le regole in vigore.', 'tasse']],
+      r: [['Sapresti spiegare', 'cosa hai comprato {g:davvero}?']],
+      t: ['#cripto', '#bitcoin', '#rischio'] },
+    { id: 'dichiarazione', n: 'investimenti e dichiarazione dei redditi', k: ['730', 'dichiarazion', 'quadro rw', 'rw', 'ivafe', 'regime dichiarativo', 'broker estero', 'redditi di capitale'], m: 'explainer', s: 'FISCO • DICHIARAZIONE', tax: 1,
+      v: ['INVESTIMENTI E 730', 'BROKER ESTERO E TASSE', 'COSA DICHIARARE'],
+      h: ['Hai un broker estero? Le tasse le calcoli tu.', 'Investimenti e dichiarazione: chi fa cosa.', 'Regime amministrato o dichiarativo: cambia chi fa i conti.'],
+      p: [['Regime amministrato.', 'Banca o broker italiano fanno da {a:sostituto d’imposta}: trattengono loro le tasse.', 'app'],
+        ['Regime dichiarativo.', 'Con molti broker esteri {b:le tasse le calcoli e le dichiari tu}.', 'tasse'],
+        ['Il monitoraggio.', 'Le attività all’estero vanno nel {g:quadro RW}, con l’IVAFE sulle attività finanziarie.', 'tasse', 'RW'],
+        ['Serve lo storico.', 'Prezzi di carico, vendite, dividendi: {a:tienili in ordine} tutto l’anno.', 'checklist']],
+      r: [['Se domani dovessi compilare la dichiarazione,', 'avresti {g:tutti i numeri}?']],
+      t: ['#730', '#dichiarazionedeiredditi', '#fisco'] },
+    { id: 'traccia', n: 'tenere traccia del portafoglio', k: ['tenere traccia', 'traccia', 'monitorare', 'tracker', 'piu broker', 'excel', '~portafoglio'], m: 'explainer', s: 'PORTAFOGLIO • CONTROLLO',
+      v: ['DOVE SONO I TUOI SOLDI?', 'TANTI BROKER, UN PORTAFOGLIO', 'IL QUADRO COMPLETO'],
+      h: ['Tre broker, due app e un Excel: sai quanto hai davvero?', 'Se non lo misuri, non lo gestisci.', 'Quanto rende il tuo portafoglio, tutto insieme?'],
+      p: [['Il problema.', 'Conti, broker e fondi sparsi: {g:nessuno ti dà il totale}.', 'domanda'],
+        ['Cosa serve vedere.', '{a:Valore}, {b:rendimento}, costi e tasse, tutto nello stesso quadro.', 'app'],
+        ['Perché conta.', 'Senza il totale non sai se sei {a:diversificato} né quanto paghi.', 'diversificazione'],
+        ['Le scadenze.', 'Minusvalenze, cedole, dichiarazione: {g:una data persa} costa.', 'tasse']],
+      r: [['Quanto vale oggi il tuo portafoglio,', '{g:tutto insieme}?']],
+      t: ['#portafoglio', '#investimenti', '#finanzapersonale'] },
+    { id: 'benchmark', n: 'benchmark', k: ['benchmark', 'indice di riferimento', 'battere il mercato', 'sottoperform', 'gestione attiva', 'fondo attivo'], m: 'explainer', s: 'FONDI • CONFRONTI',
+      v: ['IL BENCHMARK', 'BATTE IL MERCATO?', 'CONFRONTA BENE'],
+      h: ['Il tuo fondo ha fatto +5%. È tanto o poco?', 'Un rendimento da solo non dice niente. Serve un confronto.', 'Battere il mercato: cosa vuol dire davvero.'],
+      p: [['Cos’è.', 'È l’{a:indice di riferimento} con cui confrontare un fondo.', 'obiettivo'],
+        ['Il confronto giusto.', 'Un fondo azionario globale si confronta con {b:un indice globale}, non con il conto.', 'domanda'],
+        ['Al netto dei costi.', 'Conta quanto resta {g:dopo le commissioni}, sullo stesso periodo.', 'commissioni'],
+        ['Su più anni.', 'Un anno buono non basta: guarda {a:periodi lunghi}.', 'tempo']],
+      r: [['Sai se il tuo fondo', 'ha fatto meglio {g:del suo indice}?']],
+      t: ['#benchmark', '#fondi', '#ETF'] },
+    { id: 'costinascosti', n: 'costi nascosti dei fondi', k: ['costi nascost', 'commissioni nascost', 'commissioni', 'kid', 'commissione di ingresso', 'performance fee'], m: 'list', s: 'FONDI • COSTI',
+      v: ['I COSTI NASCOSTI', 'COSA PAGHI SENZA SAPERLO', 'LEGGI IL KID'],
+      h: ['Il tuo fondo ti costa più di quanto pensi?', 'I costi che non vedi nell’estratto conto.', 'Dove si nascondono le commissioni.'],
+      p: [['Spese correnti.', 'Il {a:costo annuo} del fondo, tolto dal rendimento.', 'commissioni'],
+        ['Ingresso e uscita.', 'Alcuni fondi trattengono una {b:percentuale} quando entri o esci.', 'commissioni'],
+        ['Commissioni di performance.', 'Una quota del guadagno, se il fondo {g:supera un obiettivo}.', 'obiettivo'],
+        ['Costi di transazione.', 'Comprare e vendere titoli dentro il fondo {a:ha un costo}.', 'calo'],
+        ['Dove trovarli.', 'Sono tutti nel {g:KID} e nell’informativa sui costi.', 'checklist']],
+      r: [['Sai quanto ti costano', 'i tuoi fondi {g:ogni anno}?']],
+      t: ['#commissioni', '#fondi', '#costi'] },
+    { id: 'oro', n: 'oro', k: ['oro', 'metalli preziosi', 'lingott', 'bene rifugio', 'etc'], m: 'explainer', s: 'ORO • BENE RIFUGIO',
+      v: ['ORO: BENE RIFUGIO?', 'L’ORO NEL PORTAFOGLIO', 'BRILLA, MA…'],
+      h: ['L’oro protegge sempre? Non proprio.', 'Bene rifugio: cosa fa davvero l’oro in portafoglio.', 'Oro: niente dividendi, niente cedole. E allora?'],
+      p: [['Non paga nulla.', 'L’oro {g:non dà dividendi né cedole}: guadagni solo se il prezzo sale.', 'domanda'],
+        ['Bene rifugio.', 'In alcune crisi ha {a:tenuto meglio}, ma non è una regola.', 'protezione'],
+        ['Anche lui oscilla.', 'Ci sono stati {b:anni lunghi} di prezzi in calo.', 'calo'],
+        ['Come si compra.', 'Fisico oppure tramite {a:ETC}: costi e tasse cambiano.', 'checklist']],
+      r: [['Hai oro in portafoglio', 'perché sai {g:a cosa ti serve}?']],
+      t: ['#oro', '#benerifugio', '#investire'] },
+    { id: 'ribassi', n: 'mercati che scendono', k: ['crollo', 'crolla', 'ribass', 'mercati scendono', 'borsa scende', 'mercato scende', 'crisi', 'bear market', 'panico'], m: 'explainer', s: 'MERCATI • RIBASSI',
+      v: ['QUANDO I MERCATI SCENDONO', 'NIENTE PANICO', 'IL ROSSO SUL GRAFICO'],
+      h: ['Il mercato scende. Cosa fai?', 'Il portafoglio in rosso fa male. Vendere può fare peggio.', 'I ribassi fanno parte del gioco. Il panico no.'],
+      p: [['Succede.', 'Ribassi anche forti fanno {a:parte della storia} dei mercati.', 'calo'],
+        ['Vendere nel panico.', 'Vendere dopo un calo {g:rende definitiva la perdita}.', 'errore'],
+        ['Nessuno sa quando finisce.', 'Il punto più basso {b:non lo prevede nessuno} in modo costante.', 'domanda'],
+        ['Torna al piano.', 'Orizzonte, obiettivi, fondo emergenze: {a:il piano viene prima} del grafico.', 'obiettivo']],
+      r: [['Il mercato scende.', 'Il tuo piano {g:è cambiato}?']],
+      t: ['#mercati', '#borsa', '#investire'] },
+    { id: 'bias', n: 'emozioni e bias', k: ['emozion', 'bias', 'psicologia', 'paura', 'fomo', 'avidit', 'finanza comportamentale'], m: 'list', s: 'MENTE • INVESTIRE',
+      v: ['LE TRAPPOLE DELLA MENTE', 'IL NEMICO SEI TU', 'BIAS CHE COSTANO'],
+      h: ['Il nemico del tuo portafoglio? Spesso sei tu.', 'Le trappole mentali che ti fanno investire male.', 'Non è il mercato. È la testa.'],
+      p: [['Avversione alle perdite.', 'Una perdita {g:fa più male} di quanto un guadagno uguale faccia piacere.', 'calo'],
+        ['Effetto gregge.', 'Comprare perché {a:lo fanno tutti}, spesso tardi.', 'errore'],
+        ['Eccesso di fiducia.', 'Pensare di {b:prevedere il mercato} meglio degli altri.', 'domanda'],
+        ['Ancoraggio.', 'Restare legati al {a:prezzo di acquisto} invece che ai fatti di oggi.', 'obiettivo']],
+      r: [['L’ultima volta che hai deciso,', 'era {g:un piano o un’emozione}?']],
+      t: ['#finanzacomportamentale', '#bias', '#investire'] },
+    { id: 'budget', n: 'budget e risparmio', k: ['budget', 'risparmiar', 'risparmio', 'spese mensili', 'stipendio', 'fine mese'], m: 'list', s: 'RISPARMIO • METODO',
+      v: ['IL BUDGET CHE FUNZIONA', 'RISPARMIARE SENZA SOFFRIRE', 'DOVE VA LO STIPENDIO?'],
+      h: ['A fine mese non sai dove sono finiti i soldi?', 'Risparmiare non è tagliare tutto. È decidere prima.', 'Il metodo semplice per tenere un budget.'],
+      p: [['Traccia le spese.', 'Per un mese segna {a:tutto}: le sorprese arrivano dalle piccole spese.', 'checklist'],
+        ['Paga prima te stesso.', 'Sposta il risparmio {b:appena arriva lo stipendio}, non a fine mese.', 'accumulo'],
+        ['Usa una regola semplice.', 'Un riferimento noto è il {g:50/30/20}: bisogni, desideri, risparmio.', 'diversificazione'],
+        ['Dai un nome agli obiettivi.', 'Un risparmio {a:con uno scopo} è più facile da mantenere.', 'obiettivo']],
+      r: [['Sai quanto hai risparmiato', '{g:il mese scorso}?']],
+      t: ['#budget', '#risparmio', '#finanzapersonale'] },
+    { id: 'etf', n: 'ETF', k: ['etf', 'fondo indicizzato', 'replica un indice', 'indicizzat'], m: 'explainer', s: 'ETF • GUIDA BASE',
+      v: ['GLI ETF IN 30 SECONDI', 'COS’È UN ETF?', 'UN INDICE IN UN TITOLO'],
+      h: ['ETF: cosa sono, spiegato semplice.', 'Con un solo acquisto puoi avere centinaia di aziende. Ecco come.', 'Tutti parlano di ETF. Ma cosa compri davvero?'],
+      p: [['Cos’è.', 'Un {a:fondo quotato} in Borsa che di solito replica un indice.', 'app'],
+        ['Tanti titoli insieme.', 'Con un ETF compri {b:un paniere intero}, non una sola azione.', 'diversificazione'],
+        ['Costi spesso contenuti.', 'Seguono un indice, quindi spesso costano {g:meno dei fondi attivi}.', 'commissioni'],
+        ['Non sono tutti uguali.', 'Indice, costi, {a:distribuzione o accumulo}: leggi la scheda.', 'checklist']],
+      r: [['Sai quale indice replica', '{g:ogni ETF} che hai?']],
+      t: ['#ETF', '#investire', '#educazionefinanziaria'] },
+    { id: 'btp', n: 'BTP e titoli di Stato', k: ['btp', 'titoli di stato', 'bot', 'ctz', 'buoni del tesoro', 'cedola'], m: 'explainer', s: 'TITOLI DI STATO • BASI', tax: 1,
+      v: ['BTP E TITOLI DI STATO', 'PRESTARE ALLO STATO', 'COSA SAPERE SUI BTP'],
+      h: ['BTP: cosa compri davvero quando presti allo Stato.', 'Titoli di Stato: quattro cose da sapere prima di comprarli.', 'Perché il prezzo di un BTP si muove?'],
+      p: [['Cosa sono.', 'Presti soldi allo Stato e ricevi {a:cedole} e il rimborso a scadenza.', 'distribuzione'],
+        ['Il prezzo si muove.', 'Se vendi prima della scadenza il prezzo dipende dai {g:tassi di mercato}.', 'calo'],
+        ['Tassazione agevolata.', 'Su interessi e guadagni si paga il {b:12,5%}.', 'tasse', '12,5%'],
+        ['Un altro vantaggio.', 'I titoli di Stato sono {a:esenti dall’imposta di successione}.', 'protezione']],
+      r: [['Sai quanto pagano davvero i tuoi titoli', '{g:dopo le tasse}?']],
+      t: ['#BTP', '#titolidistato', '#obbligazioni'] },
+    { id: 'bollo', n: 'imposta di bollo', k: ['imposta di bollo', 'bollo', '34 20', 'dossier titoli'], m: 'explainer', s: 'FISCO • BOLLO', tax: 1,
+      v: ['L’IMPOSTA DI BOLLO', 'IL COSTO DI TENERE I TITOLI', 'BOLLO SU CONTI E DOSSIER'],
+      h: ['Paghi una tassa solo per avere i tuoi titoli. La conosci?', 'Imposta di bollo: la voce che trovi ogni anno in estratto conto.', 'Bollo sul dossier titoli: come funziona.'],
+      p: [['Sul dossier titoli.', 'Si paga lo {a:0,20% annuo} sul valore dei prodotti finanziari.', 'tasse', '0,20%'],
+        ['Sul conto corrente.', '{b:34,20 €} l’anno per le persone fisiche, se la giacenza media supera 5.000 €.', 'tasse', '34,20 €'],
+        ['Anche in perdita.', 'Si paga {g:sul valore}, non sul guadagno: anche negli anni negativi.', 'calo'],
+        ['All’estero.', 'Per le attività finanziarie all’estero c’è l’{a:IVAFE}, con la stessa aliquota.', 'tasse']],
+      r: [['Sai quanto paghi di bollo', '{g:ogni anno}?']],
+      t: ['#impostadibollo', '#tasse', '#investimenti'] },
+    { id: 'pacpic', n: 'PAC o PIC', k: ['pic', 'tutto subito', 'lump sum', 'unica soluzione', 'pac o pic', 'pac vs pic'], m: 'explainer', s: 'INVESTIRE • INGRESSO',
+      v: ['PAC O PIC?', 'TUTTO SUBITO O A RATE?', 'QUANDO ENTRARE'],
+      h: ['Hai una somma da investire: tutto subito o un po’ alla volta?', 'PAC o PIC: la differenza non è solo matematica.', 'Entrare tutto insieme o a rate? Dipende.'],
+      p: [['PAC o PIC?', 'Un {a:PAC} entra a rate, un {b:PIC} investe tutto in una volta.', 'confronto'],
+        ['Il PIC.', 'Più tempo nel mercato per {b:tutta la somma}, ma anche tutto il rischio del momento d’ingresso.', 'crescita'],
+        ['Il PAC.', 'Diluisce l’ingresso nel tempo: {a:meno rimpianti} se il mercato scende subito.', 'tempo'],
+        ['Cosa conta davvero.', 'Orizzonte, costi per operazione e {g:quanto reggi le oscillazioni}.', 'domanda']],
+      r: [['La domanda giusta non è quando entrare.', 'È {g:quanto resti dentro}.']],
+      t: ['#PAC', '#PIC', '#investire'] },
+    { id: 'azetf', n: 'azioni singole o ETF', k: ['azioni singole', 'singoli titoli', 'stock picking', 'comprare azioni'], m: 'explainer', s: 'INVESTIRE • SCELTE',
+      v: ['AZIONI SINGOLE vs ETF', 'UN TITOLO O UN PANIERE?', 'STOCK PICKING?'],
+      h: ['Scegliere le azioni una per una o comprare tutto l’indice?', 'Azioni singole o ETF: cosa cambia per il rischio.', 'Vuoi battere il mercato o comprarlo?'],
+      p: [['Azioni o ETF?', 'Con le {a:azioni singole} scegli tu, con un {b:ETF} compri un indice.', 'confronto'],
+        ['Azioni singole.', 'Più controllo, ma il risultato dipende da {g:poche aziende}.', 'obiettivo'],
+        ['ETF.', 'Diversificazione immediata su {b:molti titoli}, con un costo annuo.', 'diversificazione'],
+        ['Tempo e metodo.', 'Analizzare aziende richiede {a:tempo e studio}: chiediti se ce l’hai.', 'tempo']],
+      r: [['Scegli i titoli', 'con {g:un metodo} o con l’istinto?']],
+      t: ['#azioni', '#ETF', '#investire'] },
+  ]
+
+  function lev(a, b) {
+    var p = [], i, j
+    for (j = 0; j <= b.length; j++) p[j] = j
+    for (i = 1; i <= a.length; i++) {
+      var q = [i]
+      for (j = 1; j <= b.length; j++) q[j] = Math.min(p[j] + 1, q[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1))
+      p = q
+    }
+    return p[b.length]
+  }
+  function norm(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim() }
+  /** 1 exact or prefix, 0.6 typo (1 edit, 2 for long words), 0 none. Short words and numbers only exact. */
+  function hitWord(k, toks) {
+    var i, w
+    for (i = 0; i < toks.length; i++) { w = toks[i]; if (w === k || (k.length > 3 && w.indexOf(k) === 0)) return 1 }
+    if (k.length <= 3 || /\d/.test(k)) return 0
+    var tol = k.length >= 7 ? 2 : 1
+    for (i = 0; i < toks.length; i++) {
+      w = toks[i]
+      if (w.length < 4) continue
+      for (var L = k.length - 1; L <= k.length + 1; L++) if (L <= w.length && lev(w.slice(0, L), k) <= tol) return 0.6
+    }
+    return 0
+  }
+  /** Best knowledge-base entry for a topic, or null: every word of a keyword must hit, in any order. */
+  function pickTopic(topic) {
+    var toks = norm(topic).split(' ').filter(Boolean), best = null, top = 0
+    KB.forEach(function (e) {
+      var sc = 0
+      e.k.forEach(function (k0) {
+        var half = k0.charAt(0) === '~', ws = norm(k0).split(' '), sum = 0
+        for (var i = 0; i < ws.length; i++) { var h = hitWord(ws[i], toks); if (!h) return; sum += h * (ws[i].length <= 3 ? 5 : ws[i].length) }
+        sc += half ? sum / 2 : sum
+      })
+      if (sc > top) { top = sc; best = e }
+    })
+    return top >= 4 ? best : null
+  }
+  /** Figures the user wrote: percentages, euro amounts, years, "al mese", a count ("5 errori"). */
+  function figures(topic) {
+    var s = ' ' + String(topic || '').toLowerCase().replace(/(\d)\s*(k|mila)\b/g, function (m, d) { return d + '000' }) + ' ', m, f = { pcts: [], eur: 0, years: 0, monthly: false, count: 0 }
+    var re = /(\d+(?:[.,]\d+)?)\s*(?:%|per ?cento)/g
+    while ((m = re.exec(s))) f.pcts.push(parseFloat(m[1].replace(',', '.')))
+    m = s.match(/€\s*(\d[\d.]*(?:,\d+)?)|(\d[\d.]*(?:,\d+)?)\s*(?:€|euro\b|eur\b)/)
+    if (m) f.eur = amount(m[1] || m[2]) || 0
+    m = s.match(/(\d{1,2})\s*anni/)
+    if (m) f.years = +m[1]
+    f.monthly = /al mese|mensil|ogni mese/.test(s)
+    m = s.match(/\b([2-9]|10)\s+(errori|consigli|passi|cose|modi|regole|motivi|trucchi|domande|segnali|step|abitudini)/)
+    if (m) f.count = +m[1]
+    return f
+  }
+  var ORD = ['Primo', 'Secondo', 'Terzo', 'Quarto', 'Quinto', 'Sesto', 'Settimo', 'Ottavo']
+  var TEXT_KINDS = { post: 1, carosello: 1, carousel: 1, thread: 1, linkedin: 1, x: 1, tweet: 1, newsletter: 1, email: 1, articolo: 1, blog: 1, caption: 1, didascalia: 1 } // no script; reel, storia and unknown kinds get one
+  function mk(s) { return esc(s).replace(/\{(a|b|g):([^}]*)\}/g, function (m, k, x) { return '<span class="hl-' + (k === 'g' ? 'gold' : k) + '">' + x + '</span>' }) }
+  function unmk(s) { return String(s).replace(/\{(?:a|b|g):([^}]*)\}/g, '$1') }
+  function capFirst(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1) }
+  function pctTxt(p) { return nf(p, p % 1 ? (Math.round(p * 100) % 10 ? 2 : 1) : 0) + '%' }
+  function eurT(v) { return nf(v, 0) + ' €' }
+  function yearsOf(N) { var st = Math.max(1, Math.ceil(N / 15)), ys = []; for (var y = 0; y < N; y += st) ys.push(y); ys.push(N); return ys }
+  function thirds(n) { var i1 = Math.floor((n - 1) / 3), i2 = Math.max(i1 + 1, Math.floor(2 * (n - 1) / 3)); return [[0, i1], [i1 + 1, i2], [i2 + 1, n - 1]] }
+  var STOP = ' il lo la i gli le un una uno di da a in con su per tra fra e o ed oppure come cosa cos e perche quando quale quali quanto che del della dei delle degli al alla ai alle nel nella nei sul sulla mio tuo suo vs contro differenza fare sono non piu meglio '
+
+  /** The computed examples: real maths on the user's figures, hypothetical defaults otherwise (always declared as such). */
+  function calcOf(kind, f) {
+    var N = clampN(f.years || (kind === 'comp' ? 30 : 20), 3, 50), ys = yearsOf(N), n = ys.length, T = thirds(n), o = { N: N, ys: ys, T: T }
+    var label = function (y) { return { label: 'A' + y, fullDate: 'Anno ' + y } }
+    if (kind === 'ter' || kind === 'rend2') {
+      var ps = f.pcts.slice().sort(function (x, y) { return x - y }), C = f.eur || 10000, r, lo, hi
+      if (kind === 'ter') {
+        r = ps.length >= 3 ? ps.pop() : 6
+        lo = ps.length >= 2 ? ps[0] : ps.length ? Math.min(ps[0], 0.2) : 0.2
+        hi = ps.length >= 2 ? ps[ps.length - 1] : ps.length && ps[0] > 0.2 ? ps[0] : 1.8
+      } else { hi = ps[0]; lo = ps[ps.length - 1] } // rend2: a = the higher return
+      if (lo === hi) hi = lo + 1
+      var gA = kind === 'ter' ? (r - lo) / 100 : lo / 100, gB = kind === 'ter' ? (r - hi) / 100 : hi / 100
+      o.data = ys.map(function (y) { var d = label(y); d.a = Math.round(C * Math.pow(1 + gA, y)); d.b = Math.round(C * Math.pow(1 + gB, y)); return d })
+      var last = o.data[n - 1], mid = o.data[T[1][1]], diff = last.a - last.b
+      o.final = [last.a, last.b]
+      o.series = kind === 'ter'
+        ? { a: { name: 'TER ' + pctTxt(lo), ticker: 'BASSO', color: '#38BDF8', subLabel: 'Costo annuo più basso' }, b: { name: 'TER ' + pctTxt(hi), ticker: 'ALTO', color: '#F97316', subLabel: 'Costo annuo più alto' } }
+        : { a: { name: 'Rendimento ' + pctTxt(lo), ticker: 'A', color: '#38BDF8', subLabel: 'Ipotesi costante' }, b: { name: 'Rendimento ' + pctTxt(hi), ticker: 'B', color: '#10B981', subLabel: 'Ipotesi costante' } }
+      o.title = kind === 'ter' ? 'TER ' + pctTxt(lo) + ' vs ' + pctTxt(hi) : pctTxt(lo) + ' vs ' + pctTxt(hi)
+      o.sub = 'SU ' + N + ' ANNI'
+      o.header = eurT(C) + ' per ' + N + ' anni • ' + (kind === 'ter' ? 'TER ' : '') + pctTxt(lo) + ' vs ' + pctTxt(hi) + ' • esempio ipotetico'
+      o.disc = kind === 'ter' ? 'Esempio ipotetico: ' + eurT(C) + ' al ' + pctTxt(r) + ' annuo lordo meno il TER, per ' + N + ' anni, senza tasse. Non è consulenza.'
+        : 'Esempio ipotetico: ' + eurT(C) + ' a rendimenti costanti per ' + N + ' anni, senza costi né tasse. Non è consulenza.'
+      o.chapters = [
+        { title: 'Stesso capitale, stesso mercato.', text: kind === 'ter' ? 'Si parte da {a:' + eurT(C) + '}: cambia solo il costo, {a:' + pctTxt(lo) + '} contro {b:' + pctTxt(hi) + '} l’anno.' : 'Si parte da {a:' + eurT(C) + '}: cambia solo il rendimento, {a:' + pctTxt(lo) + '} contro {b:' + pctTxt(hi) + '}.' },
+        { title: 'La forbice si apre.', text: 'Dopo ' + ys[T[1][1]] + ' anni: {a:' + eurT(mid.a) + '} contro {b:' + eurT(mid.b) + '}. La differenza si compone {g:ogni anno}.' },
+        { title: 'Dopo ' + N + ' anni: ' + eurT(diff) + ' di differenza.', accent: 'gold', text: 'Nell’esempio la differenza è {g:' + eurT(diff) + '}, il {g:' + Math.round(diff / last.a * 100) + '%} del risultato migliore.' }]
+      o.example = 'Esempio ipotetico: ' + eurT(C) + ' per ' + N + ' anni diventano ' + eurT(last.a) + ' con ' + o.series.a.name + ' e ' + eurT(last.b) + ' con ' + o.series.b.name + ': ' + eurT(diff) + ' di differenza.'
+      o.mode = 'race'
+      o.milestones = [{ idx: n - 1, label: '€' + nf(last.a, 0), target: 'a', dir: 'top' }, { idx: n - 1, label: '€' + nf(last.b, 0), target: 'b', dir: 'bottom' }]
+      return o
+    }
+    if (kind === 'comp' || kind === 'pac') {
+      var rr = f.pcts.length ? f.pcts[f.pcts.length - 1] : 5, pac = kind === 'pac', M = f.eur || (pac ? 200 : 10000), i = rr / 1200
+      var val = function (y) { return pac ? (i ? M * (Math.pow(1 + i, 12 * y) - 1) / i : M * 12 * y) : M * Math.pow(1 + rr / 100, y) }
+      var paid = function (y) { return pac ? M * 12 * y : M }
+      o.data = ys.map(function (y) { var d = label(y); d.a = Math.round(val(y)); return d })
+      var e1 = ys[T[0][1]], e2 = ys[T[1][1]], A1 = o.data[T[0][1]].a, A2 = o.data[T[1][1]].a, AN = o.data[n - 1].a, VN = paid(N)
+      o.final = [AN]
+      o.series = { a: { name: pac ? 'PAC ' + nf(M, 0) + ' €/MESE' : 'CAPITALE ' + nf(M, 0) + ' €', ticker: pac ? 'PAC' : 'CAP', color: '#38BDF8', subLabel: 'Ipotesi ' + pctTxt(rr) + ' annuo costante' } }
+      o.title = pac ? nf(M, 0) + ' € AL MESE' : nf(M, 0) + ' € AL ' + pctTxt(rr)
+      o.sub = 'PER ' + N + ' ANNI'
+      o.header = (pac ? nf(M, 0) + ' € al mese' : eurT(M)) + ' per ' + N + ' anni • esempio ipotetico al ' + pctTxt(rr) + ' annuo'
+      o.disc = 'Esempio ipotetico: ' + (pac ? nf(M, 0) + ' €/mese' : eurT(M)) + ' al ' + pctTxt(rr) + ' annuo costante per ' + N + ' anni, senza costi né tasse. Non è consulenza.'
+      o.chapters = pac ? [
+        { title: 'All’inizio conta quello che versi.', text: 'Dopo ' + e1 + ' anni hai versato {a:' + eurT(paid(e1)) + '}: nell’esempio valgono {a:' + eurT(A1) + '}.' },
+        { title: 'Poi il tempo inizia a lavorare.', text: 'Dopo ' + e2 + ' anni: {a:' + eurT(paid(e2)) + '} versati, {b:' + eurT(A2) + '} nell’esempio.' },
+        { title: 'Dopo ' + N + ' anni: ' + eurT(AN) + '.', accent: 'gold', text: '{a:' + eurT(VN) + '} versati, {g:' + eurT(AN - VN) + '} dal rendimento composto nell’esempio.' }] : [
+        { title: 'All’inizio sembra poco.', text: 'Dopo ' + e1 + ' anni: {a:' + eurT(A1) + '}. Conta quasi solo il {a:capitale iniziale}.' },
+        { title: 'Poi la curva si piega.', text: 'Dopo ' + e2 + ' anni: {a:' + eurT(A2) + '}. Gli interessi producono {g:altri interessi}.' },
+        { title: 'Dopo ' + N + ' anni: ' + eurT(AN) + '.', accent: 'gold', text: 'Nell’esempio {g:' + eurT(AN - M) + '} arrivano dagli interessi composti, senza nuovi versamenti.' }]
+      o.example = pac ? 'Esempio ipotetico: ' + nf(M, 0) + ' € al mese per ' + N + ' anni al ' + pctTxt(rr) + ' annuo fanno ' + eurT(VN) + ' versati e ' + eurT(AN) + ' finali.'
+        : 'Esempio ipotetico: ' + eurT(M) + ' al ' + pctTxt(rr) + ' annuo per ' + N + ' anni diventano ' + eurT(AN) + '.'
+      o.mode = 'growth'
+      o.milestones = [{ idx: T[1][1], label: e2 + ' anni • €' + nf(A2, 0), target: 'a' }, { idx: n - 1, label: N + ' anni • €' + nf(AN, 0), target: 'a' }]
+      return o
+    }
+    if (kind === 'infl') {
+      var C2 = f.eur || 10000, p = f.pcts.length ? f.pcts[0] : 2, real = C2 / Math.pow(1 + p / 100, N), loss = Math.round((1 - real / C2) * 100)
+      o.final = [Math.round(real)]
+      o.title = 'IL LADRO SILENZIOSO'; o.sub = N + ' ANNI DI INFLAZIONE'
+      o.header = eurT(C2) + ' fermi per ' + N + ' anni • inflazione ipotetica al ' + pctTxt(p)
+      o.disc = 'Esempio ipotetico: inflazione costante al ' + pctTxt(p) + ' annuo per ' + N + ' anni. Non è consulenza.'
+      o.chapters = [
+        { big: '€' + nf(C2, 0), caption: 'Oggi sul conto', title: 'Il saldo resta uguale.', text: 'Lasci {a:' + eurT(C2) + '} fermi sul conto per {a:' + N + ' anni}.' },
+        { big: N + ' anni', caption: 'Inflazione ipotetica al ' + pctTxt(p) + ' annuo', accent: 'b', title: 'I prezzi salgono piano.', text: 'Con un’inflazione del {b:' + pctTxt(p) + '} l’anno, ogni anno compri un po’ meno.' },
+        { big: '€' + nf(real, 0), caption: 'Il potere d’acquisto nell’esempio', accent: 'gold', title: 'Valgono come ' + eurT(real) + ' di oggi.', text: 'Dopo ' + N + ' anni quei soldi comprano come {g:' + eurT(real) + '} di oggi.' },
+        { big: '-' + loss + '%', caption: 'Potere d’acquisto perso', title: 'Senza veder uscire un euro.', text: 'Il numero non cambia, ma perdi il {g:' + loss + '%} del potere d’acquisto.' }]
+      o.example = 'Esempio ipotetico: con un’inflazione al ' + pctTxt(p) + ' annuo, ' + eurT(C2) + ' fermi per ' + N + ' anni comprano come ' + eurT(real) + ' di oggi.'
+      o.mode = 'stat'
+      return o
+    }
+    return null
+  }
+
+  /** A topic the user typed → {config (VIDEO_CONFIG, already validated), draft (post text and ~30 s script)}. Deterministic: same input, same output; another seed, another version. */
+  function fromTopic(topic, opts) {
+    opts = obj(opts)
+    var b0 = obj(opts.brand), name = str(b0.name, 28) || 'Yourv€$t', yv = /yourv/i.test(name), say = yv ? 'Yourvest' : name.replace(/[€$#*_]/g, '')
+    var seed = Math.abs(Math.floor(num(opts.seed, 0))) || 0, kind = String(opts.kind || 'reel').toLowerCase()
+    var pick = function (a, slot) { return a[(seed + (slot || 0)) % a.length] }
+    var raw0 = str(topic, 140) || 'Investire con metodo', low = ' ' + norm(raw0) + ' ', f = figures(raw0)
+    var cmp = / (vs|contro|oppure|o|differenza|meglio|versus) /.test(low)
+    var costy = / ter | (cost|commission|spese)/.test(low)
+    var listy = / (errori|errore|consigli|passi|step|regole|trucchi|modi per|cose da|abitudini|come (fare|iniziare|scegliere|risparmiare|evitare|smettere|organizzare|migliorare|imparare)) /.test(low) || f.count > 0
+    var e = pickTopic(raw0)
+    // the maths the figures call for; a knowledge-base entry brings its own example when the user gives none
+    var numCalc = f.pcts.length >= 2 && (cmp || costy) ? (costy ? 'ter' : 'rend2') : f.eur && f.monthly ? 'pac' : f.pcts.length && (f.eur || f.years) ? 'comp' : ''
+    if (e && e.id === 'ter' && f.pcts.length === 1) numCalc = 'ter'
+    var calc = e ? (numCalc && !e.calc ? (e.m === 'explainer' || e.m === 'list' ? '' : numCalc) : e.calc || '') : numCalc
+    if (e && e.calc && numCalc && numCalc !== e.calc && (numCalc === 'ter' || numCalc === 'rend2')) calc = numCalc
+    if (calc === 'comp' && f.monthly && f.eur) calc = 'pac' // "300 euro al mese" is a monthly plan, not a lump sum
+    var C = calc ? calcOf(calc, f) : null
+    var fin = e ? true : / (invest|soldi|euro|risparm|borsa|azion|fond|banca|conto|mutuo|prestit|debit|tasse|fisco|pension|finanz|rendiment|interess|portafogl|cripto|bitcoin|stipendi|spes) /.test(low) || !!(f.eur || f.pcts.length)
+    var tax = !!(e && e.tax)
+
+    /* the subject of a free topic: the words without question words and articles */
+    var subj = raw0.replace(/^\s*(\d+\s+)?(come|perch[eé]|cos[’']?[eè]|cosa sono|cosa|quando|quale|quali|quanto)\s+/i, '').replace(/[?!.]+$/, '').trim() || raw0
+    var parts = null
+    if (cmp) {
+      var mt = raw0.match(/differenza tra\s+(.+?)\s+e\s+(.+)/i) || raw0.match(/^(.+?)\s+(?:vs\.?|versus|contro|oppure|o)\s+(.+)$/i)
+      if (mt) parts = [mt[1], mt[2]].map(function (x) { return x.replace(/[?!.]+$/, '').split(/\s+/).slice(-3).join(' ').replace(/^(il|lo|la|i|gli|le|un|una|l’|l')\s+/i, '') })
+      if (mt && /differenza tra/i.test(mt[0])) parts[1] = mt[2].replace(/[?!.]+$/, '').split(/\s+/).slice(0, 3).join(' ')
+    }
+
+    /* points (body chapters) */
+    var P, titles, hooks, provs, tags, sector
+    if (e) {
+      P = e.p.slice(); titles = e.v; hooks = e.h; provs = e.r; tags = e.t; sector = e.s
+    } else {
+      var S = cut(subj, 40), Sl = /^[A-Z]{2}|^[A-Z][a-z]+\s+[A-Z]/.test(S) ? S : S.charAt(0).toLowerCase() + S.slice(1) // keep "ETF…" or "Milan Inter" as typed
+      if (parts) P = [[capFirst(parts[0]) + ' o ' + parts[1] + '?', 'Due strade, {a:' + parts[0] + '} e {b:' + parts[1] + '}: vediamo cosa cambia.', 'confronto'],
+        ['Il punto di forza di ' + cut(parts[0], 24) + '.', '{a:' + capFirst(parts[0]) + '} ha i suoi vantaggi: chiediti se sono quelli che servono a te.', 'obiettivo'],
+        ['Il punto di forza di ' + cut(parts[1], 24) + '.', '{b:' + capFirst(parts[1]) + '} ha vantaggi diversi: pesali sulla tua situazione.', 'protezione'],
+        ['Come scegliere.', 'Non esiste una risposta per tutti: {g:parti dalle tue esigenze}, non dalle mode.', 'domanda']]
+      else if (listy && /error|sbagl/.test(low)) P = [['Partire senza informarsi.', 'Il primo errore è {g:saltare le basi}.', 'errore'], ['Avere fretta.', 'I risultati veri {a:chiedono tempo}.', 'tempo'], ['Copiare gli altri.', 'Quello che funziona per altri {b:non è detto} che funzioni per te.', 'domanda'], ['Non misurare.', 'Senza controllare i progressi {g:non sai se migliori}.', 'checklist'], ['Mollare al primo ostacolo.', 'Gli intoppi {a:fanno parte} del percorso.', 'obiettivo']]
+      else if (listy) P = [['Parti dalle basi.', 'Prima di tutto capisci {a:come funziona} davvero.', 'checklist'], ['Fissa un obiettivo chiaro.', 'Un traguardo concreto {b:ti tiene in rotta}.', 'obiettivo'], ['Un passo alla volta.', 'La costanza {g:batte l’entusiasmo} del primo giorno.', 'tempo'], ['Evita la fretta.', 'L’errore più comune è {g:voler fare tutto subito}.', 'errore'], ['Controlla i progressi.', 'Quello che misuri {a:migliora}.', 'crescita']]
+      else P = [['Di cosa parliamo.', pick(['In 30 secondi: {a:' + Sl + '}, spiegato semplice.', 'Una cosa alla volta: {a:' + Sl + '}, senza giri di parole.'], 1), 'domanda'],
+        ['Perché conta.', pick(['Capirlo bene ti aiuta a {b:scegliere meglio}, senza affidarti al caso.', 'Chi lo conosce davvero {b:evita sorprese}.'], 2), 'obiettivo'],
+        ['L’errore più comune.', pick(['{g:Fermarsi alla superficie} e dare tutto per scontato.', 'Partire senza un piano e {g:fare tutto subito}.'], 3), 'errore'],
+        ['Da dove iniziare.', pick(['Fonti affidabili, {a:domande giuste}, un passo alla volta.', 'Parti dalle basi e {a:verifica sempre} quello che leggi.'], 4), 'checklist']]
+      var SU = S.toUpperCase()
+      titles = parts ? [cut(parts[0], 20).toUpperCase() + ' vs ' + cut(parts[1], 20).toUpperCase(), 'QUALE SCEGLIERE?', 'LA DIFFERENZA IN 30 SECONDI'] : listy ? [SU, 'COSA SAPERE', 'IN POCHI PASSI'] : [SU, 'SPIEGATO SEMPLICE', 'IN 30 SECONDI']
+      hooks = parts ? [capFirst(parts[0]) + ' o ' + parts[1] + '? Ecco cosa cambia davvero.', 'Tutti scelgono tra ' + parts[0] + ' e ' + parts[1] + '. Pochi sanno perché.', 'La differenza tra ' + parts[0] + ' e ' + parts[1] + ', in 30 secondi.']
+        : listy ? [capFirst(cut(raw0.replace(/[?!.]+$/, ''), 60)) + (/error|sbagl/.test(low) ? ': # errori da non fare.' : ': # passi per partire bene.'), 'Da dove si comincia? # punti, in ordine.', capFirst(cut(raw0.replace(/[?!.]+$/, ''), 60)) + '? Parti da qui.']
+          : [capFirst(S) + ': quello che devi sapere in 30 secondi.', 'Tutti parlano di ' + Sl + '. Ma cosa conta davvero?', capFirst(Sl) + ', spiegato semplice.']
+      provs = parts ? [['Tu da che parte stai:', '{a:' + parts[0] + '} o {b:' + parts[1] + '}?'], ['Hai scelto', 'per {g:abitudine} o per davvero?']] : [['Ne sapevi abbastanza?', 'Adesso sai {g:da dove partire}.'], ['Quanto ne sai davvero', 'di {a:' + cut(Sl, 40) + '}?']]
+      tags = norm(subj).split(' ').filter(function (w) { return w.length >= 4 && STOP.indexOf(' ' + w + ' ') < 0 }).slice(0, 3).map(function (w) { return '#' + w })
+      if (!tags.length) tags = ['#consigli']
+      sector = (fin ? 'FINANZA' : 'GUIDA') + ' • ' + cut(SU, 24)
+    }
+    // counts: "5 errori" takes 5 points; a list rotates its order with the seed (every point keeps its own copy)
+    var mode = C ? C.mode : e ? e.m : parts ? 'explainer' : listy ? 'list' : f.eur || f.pcts.length ? 'stat' : 'explainer'
+    if (mode === 'list' && seed) { var rot = seed % P.length; P = P.slice(rot).concat(P.slice(0, rot)) }
+    if (f.count && (mode === 'list' || !C)) P = P.slice(0, Math.max(2, Math.min(f.count, P.length)))
+    else P = P.slice(0, mode === 'list' ? 5 : 4) // a reel stays around 30–45 s
+    var nP = P.length, hash = function (s) { return String(s).replace(/#/g, nP) }
+    if (cmp && mode === 'explainer' && !P.some(function (p) { return p[2] === 'confronto' }) && parts) P.unshift([capFirst(parts[0]) + ' o ' + parts[1] + '?', 'Due strade, {a:' + parts[0] + '} e {b:' + parts[1] + '}: ecco cosa cambia.', 'confronto'])
+
+    /* chapters */
+    var acc0 = seed % 2, chapters
+    if (C && C.data) {
+      chapters = C.chapters.map(function (c1, k) { return { startIdx: C.T[k][0], endIdx: C.T[k][1], accent: c1.accent || (k % 2 ? 'b' : 'a'), pill: 'ANNI ' + C.ys[C.T[k][0]] + '–' + C.ys[C.T[k][1]], title: c1.title, html: mk(c1.text), speech: c1.title + ' ' + unmk(c1.text) } })
+    } else if (C) {
+      chapters = C.chapters.map(function (c1, k) { return { big: c1.big, caption: c1.caption, accent: c1.accent || (k % 2 ? 'b' : 'a'), pill: '', title: c1.title, html: mk(c1.text), speech: c1.title + ' ' + unmk(c1.text) } })
+    } else {
+      var single = mode === 'stat' ? (f.pcts.length ? pctTxt(f.pcts[0]) : '€' + nf(f.eur, 0)) : ''
+      chapters = P.map(function (p, k) {
+        var t1 = hash(p[0]), ch = { accent: (k + acc0) % 2 ? 'b' : 'a', pill: t1.length <= 24 ? t1.replace(/[.?!]+$/, '').toUpperCase() : '', title: t1, html: mk(p[1]), speech: (mode === 'list' ? ORD[k] + '. ' : '') + t1 + ' ' + unmk(p[1]) }
+        if (mode === 'explainer' && p[2]) ch.scene = p[2]
+        if (mode === 'list') { ch.big = String(k + 1); ch.caption = t1.replace(/[.]+$/, ''); ch.pill = '' }
+        if ((mode === 'news' || mode === 'explainer') && p[3]) ch.big = p[3]
+        if (mode === 'stat') { ch.big = k ? ['?', '!', 'OK', '→'][k % 4] : single; ch.caption = t1.replace(/[.]+$/, '') }
+        return ch
+      })
+      if (mode === 'list' || mode === 'stat') chapters.forEach(function (ch) { ch.pill = '' })
+    }
+
+    /* acts 1, 3, 4 */
+    var hook = hash(pick(hooks, 0)), prov = pick(provs, 1)
+    var disc = C ? C.disc : tax ? 'Informazione generale, non consulenza fiscale.' : fin ? 'Informazione generale, non consulenza finanziaria.' : 'Contenuto informativo generale.'
+    var feats = arr(b0.features).map(obj).filter(function (x) { return str(x.title) }).slice(0, 4)
+    var badge = pick(yv ? ['Tutto il tuo portafoglio, in un posto solo.', 'I tuoi numeri, sempre chiari.', 'Meno confusione, più controllo.'] : ['Tutto più chiaro, in un posto solo.', 'Il passo successivo è semplice.', 'Inizia da qui.'], 2)
+    var ctaSpeech = pick(yv && !fin ? ['Segui Yourvest per altri spiegoni in 30 secondi. Link in bio.', 'Ti è servito? Segui Yourvest. Link in bio.'] : yv ? ['Con Yourvest vedi tutto il tuo portafoglio in un posto solo. Link in bio.', 'Tieni tutto sotto controllo con Yourvest. Link in bio.', 'Prova Yourvest: il link è in bio.'] : ['Scopri ' + say + '. Link in bio.', 'Prova ' + say + ': il link è in bio.'], 3)
+    var raw = {
+      format: opts.format, mode: mode, sector: sector, brand: { name: name },
+      headerSubtitle: C ? C.header : capFirst(cut(raw0, 80)),
+      intro: { title: C && !e ? C.title : hash(pick(titles, 0)), subtitle: C ? C.sub : pick(['IN 30 SECONDI', 'QUELLO CHE NESSUNO TI DICE', 'LA VERSIONE SEMPLICE', 'SENZA GIRI DI PAROLE'], 1), description: hook, speech: hook },
+      chapters: chapters,
+      provocation: { line1: mk(prov[0]), line2: mk(prov[1]), speech: unmk(prov[0]) + ' ' + unmk(prov[1]) },
+      cta: { badge: badge, subtitle: yv ? 'Yourv€$t mette insieme i tuoi investimenti, con il fisco italiano già fatto:' : '', features: feats, button: 'Link in bio', speech: ctaSpeech },
+      disclaimer: disc,
+    }
+    if (C && C.data) { raw.series = C.series; raw.unit = { prefix: '€', negativePrefix: '-€', suffix: '', spreadSuffix: '', decimals: 0, higherIsBetter: true }; raw.data = C.data; raw.milestones = C.milestones; raw.chartWatermark = 'VALORE NEL TEMPO • ESEMPIO IPOTETICO' }
+    var config = validate(raw)
+
+    /* the post: three titles, body, a ~30 s script (video formats only), CTA, hashtags */
+    var plainPts = P.map(function (p, k) { return (mode === 'list' ? (k + 1) + '. ' : '') + hash(p[0]) + ' ' + unmk(p[1]) })
+    var example = C ? C.example : e && e.x ? e.x : ''
+    var proQ = unmk(prov[0]) + ' ' + unmk(prov[1])
+    var body = (mode === 'list' ? plainPts : [unmk(P[0][1])].concat(plainPts.slice(1))).concat(example ? [example] : []).concat([proQ, disc]).join('\n\n')
+    var tagName = yv ? '#yourvest' : '#' + (norm(name).replace(/ /g, '') || 'brand')
+    var hashtags = tags.concat([tagName, fin ? '#educazionefinanziaria' : '#consigli']).filter(function (h, i, a) { return a.indexOf(h) === i }).slice(0, 5)
+    var cta = pick(yv && !fin ? ['Segui Yourv€$t per altri spiegoni in 30 secondi: link in bio.', 'Ti è servito? Salva il post e segui Yourv€$t.'] : yv ? ['Tieni tutto sotto controllo con Yourv€$t: link in bio.', 'Vuoi vederlo sui tuoi numeri? Yourv€$t, link in bio.', 'Salva il post e prova Yourv€$t: link in bio.'] : ['Scopri ' + name + ': link in bio.', 'Salva il post e scopri ' + name + ': link in bio.'], 4)
+    var script = !TEXT_KINDS[kind] ? [
+      { label: 'HOOK', seconds: 3, text: hook },
+      { label: 'CONTESTO', seconds: 7, text: plainPts[0] },
+      { label: 'VALORE', seconds: 10, text: plainPts.slice(1, 3).join(' ') },
+      { label: 'ESEMPIO', seconds: 6, text: example || plainPts[3] || proQ },
+      { label: 'CTA', seconds: 4, text: ctaSpeech }] : []
+    return { config: config, draft: { titles: [0, 1, 2].map(function (k) { return hash(hooks[(seed + k) % hooks.length]) }), body: body, script: script, cta: cta, hashtags: hashtags } }
+  }
+
   /* ---------- samples: one per mode (presets in the editor, data for selfCheck) ---------- */
   var SAMPLES = {
     race: RACE_SAMPLE,
@@ -1813,13 +2365,54 @@
     var fb = fromBeats({ title: 'ETF: distribuzione o accumulo?', brand: { name: 'Yourv€$t' }, beats: [{ text: 'ETF a distribuzione o ad accumulo?', screen: 'Quale scegli?' }, { text: 'Un ETF a distribuzione ti paga i dividendi', screen: 'Distribuzione' }, { text: 'Un ETF ad accumulo reinveste i dividendi', screen: 'Accumulo' }, { text: 'Prova Yourvest, link in bio', screen: 'Link in bio' }] })
     ok(fb.mode === 'explainer' && fb.chapters.length === 2 && fb.chapters[0].scene === 'distribuzione' && fb.chapters[1].scene === 'accumulo' && fb.cta.speech.indexOf('Prova') === 0, 'fromBeats: ' + JSON.stringify(fb.chapters.map(function (x) { return x.scene })))
     ok(parseBig('+1.153,8%').v === 1153.8 && parseBig('€14.216').v === 14216 && parseBig('-25%').pre === '-' && parseBig('niente') === null, 'parseBig')
+    // fromTopic: [topic, expected entry id (null = generic), expected mode]; typos and a non-finance topic included
+    var TOPICS = [
+      ['differenza tra TER 0,15% e 1,5%', 'ter', 'race'], ['ETF a distribuzione o accumulo', 'distacc', 'explainer'], ['5 errori da evitare quando investi', 'errori', 'list'],
+      ['interese conposto', 'composto', 'growth'], ['diferenza tra etf a distribuzzione e acumulo', 'distacc', 'explainer'], ['PAC da 300 euro al mese per 25 anni', 'pac', 'growth'],
+      ['inflazzione e soldi fermi sul conto', 'inflazione', 'stat'], ['minusvalenze in scadenza', 'minusvalenze', 'news'], ['tassazione titoli di stato 12,5%', null, null],
+      ['fondo pensione o TFR in azienda', 'previdenza', 'explainer'], ['bitcoin conviene?', 'cripto', 'list'], ['3 consigli per il fondo emergenze', 'emergenza', 'list'],
+      ['come fare il pane in casa', null, 'list'], ['la storia del jazz', null, 'explainer'], ['Milan contro Inter', null, 'explainer'], ['rendimento 4% vs 7% in 30 anni', null, 'race'],
+      ['10.000 euro al 5% per 15 anni', null, 'growth'], ['il 26% di tasse sui guadagni', 'tassazione', 'explainer'], ['oro bene rifugio', 'oro', 'explainer'],
+      ['quando i mercati crollano', 'ribassi', 'explainer'], ['5 consigli per imparare a suonare la chitarra', null, 'list']]
+    var ctx0 = fake(270, 480)
+    TOPICS.forEach(function (tc) {
+      var e0 = pickTopic(tc[0]), r0 = fromTopic(tc[0], { brand: { name: 'Yourv€$t' } }), r1 = fromTopic(tc[0], { brand: { name: 'Yourv€$t' }, seed: 1 }), cf = r0.config, d = r0.draft, w = tc[0] + ': '
+      if (tc[1] !== null || tc[2] === null) ok(tc[1] === null ? true : e0 && e0.id === tc[1], w + 'topic ' + (e0 && e0.id))
+      if (tc[1] === null && tc[2] !== null) ok(!e0, w + 'expected generic, got ' + (e0 && e0.id))
+      if (tc[2]) ok(cf.mode === tc[2], w + 'mode ' + cf.mode)
+      ok(JSON.stringify(validate(cf)) === JSON.stringify(cf), w + 'passes validate unchanged')
+      var p0 = plan(cf), kinds = p0.segs.map(function (sg) { return sg.kind }).join(' ')
+      ok(/^intro( chapter)+ freeze provocation cta$/.test(kinds), w + '4 acts: ' + kinds)
+      for (var t1 = 0; t1 <= p0.total; t1 += p0.total / 7) draw(ctx0, p0, t1)
+      ok(cf.disclaimer && cf.chapters.length >= 2 && cf.cta.features.length === 4, w + 'complete')
+      ok(d.titles.length === 3 && d.titles.every(function (x) { return x.length > 5 && x.indexOf('#') < 0 }) && d.body.length > 80 && d.cta && d.hashtags.length >= 3 && d.hashtags.length <= 5, w + 'draft ' + JSON.stringify(d.titles))
+      ok(d.script.length === 5 && d.script.map(function (x) { return x.label }).join() === 'HOOK,CONTESTO,VALORE,ESEMPIO,CTA' && d.script.every(function (x) { return typeof x.seconds === 'number' && x.text }) && d.script.reduce(function (a, x) { return a + x.seconds }, 0) === 30, w + 'script')
+      ok(JSON.stringify(r1) !== JSON.stringify(r0) && r1.draft.titles[0] !== d.titles[0] && JSON.stringify(validate(r1.config)) === JSON.stringify(r1.config), w + 'seed 1 differs')
+      ok(JSON.stringify(fromTopic(tc[0], { brand: { name: 'Yourv€$t' } })) === JSON.stringify(r0), w + 'deterministic')
+      ok(!/garantit|sicuramente|rendimento certo/i.test(d.body + JSON.stringify(cf)) || /garantiti e guru/.test(d.body), w + 'no promises')
+      if (e0 && e0.tax) ok(/Informazione generale, non consulenza fiscale\.$/.test(cf.disclaimer) && /Informazione generale, non consulenza fiscale\.$/.test(d.body), w + 'tax disclaimer')
+      if (cf.data) ok(/ipotetic/i.test(cf.disclaimer) && /ipotetic/i.test(cf.headerSubtitle), w + 'example declared hypothetical')
+    })
+    // the TER case against a hand calculation: 10.000 € at 6% gross minus TER for 20 years → 10000·1,0585^20 ≈ 31.176, 10000·1,045^20 ≈ 24.117
+    var ter = fromTopic('differenza tra TER 0,15% e 1,5%').config, lastP = ter.data[ter.data.length - 1]
+    ok(lastP.label === 'A20' && lastP.a === 31176 && lastP.b === 24117 && ter.series.a.name === 'TER 0,15%' && ter.series.b.name === 'TER 1,5%', 'TER maths: ' + JSON.stringify(lastP))
+    ok(fromTopic('PAC 200 euro al mese al 5% per 20 anni').config.data.slice(-1)[0].a === 82207, 'PAC maths matches the growth sample')
+    ok(fromTopic('interese conposto con 200 euro al mese per 20 anni').config.data.slice(-1)[0].a === 82207, 'a monthly amount is a PAC')
+    // every Crea kind: draft fields always present; text kinds have an empty script, video and unknown kinds a 30 s one
+    ;['reel', 'storia', 'post', 'carosello', 'thread', 'linkedin', 'newsletter', 'qualcosa-di-nuovo', ''].forEach(function (kd) {
+      var dk = fromTopic('ETF a distribuzione o accumulo', { kind: kd, seed: 2.7, format: '1:1' }), dd = dk.draft
+      ok(Array.isArray(dd.titles) && dd.titles.length === 3 && typeof dd.body === 'string' && dd.body && Array.isArray(dd.script) && typeof dd.cta === 'string' && Array.isArray(dd.hashtags) && dk.config.format === '1:1', 'kind ' + kd + ' fields')
+      ok(dd.script.length === ({ post: 1, carosello: 1, thread: 1, linkedin: 1, newsletter: 1 }[kd] ? 0 : 5), 'kind ' + kd + ' script')
+    })
+    ok(JSON.stringify(fromTopic('ETF', { seed: 2.7 })) === JSON.stringify(fromTopic('ETF', { seed: 2 })) && fromTopic('').config.chapters.length >= 2 && fromTopic(null, { seed: -3 }).draft.titles.length === 3, 'seed integer, empty topic')
+    ok(/Yourv/.test(fromTopic('come fare il pane in casa').config.cta.features[0].title + fromTopic('come fare il pane in casa').config.cta.subtitle) || fromTopic('come fare il pane in casa').config.cta.features[0].title === FEATURES_YV[0].title, 'Yourv€$t CTA by default')
     return true
   }
 
   var api = {
     version: 2, formats: FORMATS, modes: MODES, modeNames: MODE_NAME,
     scenes: IDS.map(function (id) { return { id: id, name: META[id][0] } }),
-    validate: validate, plan: plan, draw: draw, locate: locate, fromBeats: fromBeats, guess: guess, numberIn: numberIn, plain: plain,
+    validate: validate, plan: plan, draw: draw, locate: locate, fromBeats: fromBeats, fromTopic: fromTopic, guess: guess, numberIn: numberIn, plain: plain,
     samples: SAMPLES, selfCheck: selfCheck,
   }
   if (typeof window !== 'undefined') window.VideoEngine = api
