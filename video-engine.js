@@ -775,6 +775,8 @@
     return out
   }
   function plain(html) { return rich(html).map(function (w, i) { return (i && w.gap ? ' ' : '') + w.t }).join('').replace(/\s+/g, ' ').trim() }
+  // the brand is written Yourv€$t but must be spoken "Yourvest" (every voice reads the plan's speech: app, site, HTML)
+  function say(s) { return String(s).replace(/your\s*v[€e]\s*[$s]\s*t/gi, 'Yourvest') }
   /** Shortens rich text to about max visible characters, keeping its highlights. */
   function cutRich(html, max) {
     var s = String(html == null ? '' : html), ws = rich(s), n = 0, keep = []
@@ -948,7 +950,7 @@
     var given = function (v) { v = num(v, 0); return v > 0 && v < 600 ? v : 0 }
     var est = function (text, min, extra) { return Math.max(min, words(text) / WPS2 + extra) / sp }
     var segs = [], t = 0
-    var add = function (kind, dur, i, text) { var s = { kind: kind, i: i, start: t, dur: dur, end: t + dur, speech: text || '' }; segs.push(s); t += dur; return s }
+    var add = function (kind, dur, i, text) { var s = { kind: kind, i: i, start: t, dur: dur, end: t + dur, speech: say(text || '') }; segs.push(s); t += dur; return s }
     add('intro', given(d.intro) || est(cfg.intro.speech, 3.2, 0.6), 0, cfg.intro.speech)
     cfg.chapters.forEach(function (ch, i) {
       var min = DATA[cfg.mode] ? Math.max(2.6, 0.5 * (ch.endIdx - ch.startIdx + 1)) : cfg.mode === 'stat' ? 2.8 : 2.4
