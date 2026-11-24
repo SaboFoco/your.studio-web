@@ -878,9 +878,19 @@
     onda: ['Diffusione', 2, 4, ['diffond', 'condivid', 'annunc', 'comunic', 'virale', 'notific', 'raggiunge']],
     scala: ['Scala', 3, 3, ['livell', 'passo dopo passo', 'fasi', 'gradin', 'progress', 'migliora', 'carriera']],
     unione: ['Unione', 3, 3, ['insieme', 'unisc', 'combin', 'integra', 'somma', 'mettere insieme']],
+    podio: ['Podio', 3, 3, ['classific', 'podio', 'migliori', 'primo posto', 'top 3', 'vincitor']],
+    percorso: ['Percorso', 3, 4, ['percorso', 'strada', 'tappe', 'itinerar', 'tragitto']],
+    imbuto: ['Imbuto', 3, 4, ['filtr', 'selezion', 'imbuto', 'scegli tra', 'scrematur']],
+    orbita: ['Orbita', 2, 4, ['attorno', 'intorno a', 'ruota', 'orbit', 'satellit']],
+    scoppio: ['Scoppio', 1, 1, ['esplod', 'esplos', 'improvvis', 'sorpresa', 'shock', 'di colpo']],
+    pila: ['Pila', 3, 4, ['costruisc', 'fondament', 'mattone', 'pezzo dopo pezzo', 'strati', 'si somma']],
+    semaforo: ['Semaforo', 1, 1, ['semaforo', 'via libera', 'pronti', ' stop', 'aspetta', 'partenza']],
+    settimana: ['Settimana', 1, 1, ['settiman', '7 giorni', 'sette giorni', 'lunedì', 'weekend']],
   }
-  var CUE_ORDER = ['divieto', 'sfida', 'primadopo', 'bilancia', 'scudo', 'bersaglio', 'sale', 'scende', 'timeline', 'ciclo', 'spunte', 'scala', 'unione', 'onda', 'pioggia', 'lente', 'griglia', 'hub', 'flusso', 'catena']
-  var ALT = { 1: ['eroe', 'lente', 'scudo', 'onda', 'bersaglio', 'contatore'], 2: ['flusso', 'sfida', 'bilancia', 'primadopo', 'unione'], 3: ['catena', 'hub', 'griglia', 'ciclo', 'timeline'] }
+  var CUE_ORDER = ['divieto', 'sfida', 'primadopo', 'bilancia', 'scudo', 'bersaglio', 'sale', 'scende', 'semaforo', 'podio', 'imbuto', 'scoppio', 'settimana', 'timeline', 'ciclo', 'spunte', 'scala', 'unione', 'percorso', 'pila', 'orbita', 'onda', 'pioggia', 'lente', 'griglia', 'hub', 'flusso', 'catena']
+  var ALT = { 1: ['eroe', 'lente', 'scudo', 'scoppio', 'onda', 'semaforo', 'bersaglio', 'settimana', 'contatore'], 2: ['flusso', 'sfida', 'orbita', 'bilancia', 'primadopo', 'unione'], 3: ['catena', 'hub', 'podio', 'griglia', 'percorso', 'ciclo', 'imbuto', 'timeline', 'pila'] }
+  /* ---------- styles: the same scene drawn three ways (tile shape and colours), one per video ---------- */
+  var STYLES = { neon: 'Neon', pastello: 'Pastello', linea: 'Linea' }, STY = 'neon'
   /** The layout a chapter's words call for, never the previous chapter's one. */
   function layoutFor(text, n, prev, i, hasNum) {
     var low = ' ' + String(text || '').toLowerCase() + ' ', k
@@ -932,6 +942,14 @@
     industria: ['Industria', 'fabbrica ingranaggio fulmine pacco palazzo carburante', ['industri', 'fabbric', 'produzion', 'manifattur', 'logistic']],
     innovazione: ['Innovazione', 'razzo atomo stella globo lampadina chip', ['spazio', 'nasa', 'pianet', 'razzo', 'innovaz', 'futuro', 'startup']],
     marketing: ['Marketing', 'megafono bersaglio grafico pollice hashtag lampadina', ['marketing', 'clienti', 'vendit', 'campagn', ' brand', 'pubblicit']],
+    benessere: ['Benessere', 'cuore manubrio mela goccia sole orologio', ['benessere', 'stress', 'relax', 'meditaz', 'forma fisica', 'stile di vita']],
+    startup: ['Startup', 'razzo lampadina grafico gruppo laptop bersaglio', ['startup', 'fondator', 'idea di business', 'lanciare', 'prodotto']],
+    notizie: ['Notizie', 'documento megafono globo notifica occhio fotocamera', ['notizi', 'giornal', 'news', 'cronaca', 'attualit']],
+    politica: ['Politica', 'palazzo bandiera megafono bilancia gruppo documento', ['politic', 'governo', 'elezion', 'parlament', ' voto', 'comune']],
+    motori: ['Motori', 'auto carburante chiave mappa batteria tachimetro', ['motor', 'automobil', 'elettrica', 'patente', 'guida', 'ricarica']],
+    domotica: ['Casa smart', 'casa wifi lampadina presa telefono lucchetto', ['domotic', 'smart home', 'casa intelligente', 'assistente vocale', 'alexa']],
+    logistica: ['Logistica', 'pacco treno nave aereo mappa fabbrica', ['logistic', 'magazzin', 'merci', 'container', 'catena di fornitura']],
+    solidarieta: ['Solidarietà', 'cuore gruppo regalo casa mela bambino', ['solidar', 'volontar', 'beneficen', 'donazion', 'aiutare']],
   }
   var GENERIC = 'lampadina stella persona gruppo bersaglio orologio'
   /** The domain a video talks about: its words, plus the icons its words call. '' when none. */
@@ -959,21 +977,25 @@
     ;((DOMAINS[dom] ? DOMAINS[dom][1] : GENERIC) + ' ' + GENERIC).split(' ').forEach(function (id) { if (out.length < L[1] && !have[id] && ICONS[id]) { have[id] = 1; out.push({ id: id, label: '' }) } })
     return out
   }
-  /** Every named scene: the 18 money scenes plus layout × domain. */
+  /** Every named scene: the 18 money scenes plus domain × layout × style ("salute.ciclo.pastello"). */
   function catalog() {
     var out = IDS.filter(function (id) { return id !== 'icone' }).map(function (id) { return { id: id, name: META[id][0] } })
-    Object.keys(DOMAINS).forEach(function (d) { Object.keys(LAYOUTS).forEach(function (l) { out.push({ id: d + '.' + l, name: DOMAINS[d][0] + ' · ' + LAYOUTS[l][0] }) }) })
+    Object.keys(DOMAINS).forEach(function (d) { Object.keys(LAYOUTS).forEach(function (l) { Object.keys(STYLES).forEach(function (s) { out.push({ id: d + '.' + l + '.' + s, name: DOMAINS[d][0] + ' · ' + LAYOUTS[l][0] + ' · ' + STYLES[s] }) }) }) })
     return out
   }
 
   /* ---------- drawing the layouts (900×900, t from 0 while the line is spoken) ---------- */
-  function palette6() { return [P.green, P.blue, P.gold, P.purple, P.teal, P.red] }
-  /** An icon on its rounded tile: s = scale (1 = 260 px), al = alpha. */
+  function palette6() {
+    var p = [P.green, P.blue, P.gold, P.purple, P.teal, P.red]
+    return STY === 'pastello' ? p.map(function (x) { return mix(x, '#ffffff', 0.35) }) : STY === 'linea' ? [P.teal, P.blue, P.purple, P.green, P.gold, P.red] : p
+  }
+  /** An icon on its tile (rounded square, bubble or outline, by style): s = scale (1 = 260 px), al = alpha. */
   function tile(x, y, s, id, col, t, al) {
     if (al <= 0 || s <= 0.01) return
     c.save(); c.globalAlpha *= clamp01(al); c.translate(x, y); c.scale(s, s)
-    glow(0, 0, 200, col, 0.22)
-    rr(-130, -130, 260, 260, 64); fill(grad(P.steelHi, P.panel, -130, -130, 260, 260)); stroke(A(col, 0.9), 7)
+    if (STY === 'pastello') { glow(0, 0, 190, col, 0.16); circ(0, 0, 138); fill(A(col, 0.2)); stroke(A(col, 0.85), 6) }
+    else if (STY === 'linea') { rr(-130, -130, 260, 260, 22); fill(A(P.navy, 0.7)); stroke(col, 10); path([[-130, 70], [-130, 130], [-70, 130]]); stroke(WH, 10) }
+    else { glow(0, 0, 200, col, 0.22); rr(-130, -130, 260, 260, 64); fill(grad(P.steelHi, P.panel, -130, -130, 260, 260)); stroke(A(col, 0.9), 7) }
     c.scale(0.92, 0.92); (ICONS[id] || ICONS.lampadina)(col, t)
     c.restore()
   }
@@ -1190,6 +1212,92 @@
       }
       if (done > 0) { glow(450, 400, 300 * clamp01(done), cl[2], 0.4); tile(450, 400, 1.15 * done, ic[2].id, cl[2], t, 1); tagT(ic[2].label, 450, 600, 46, 600, clamp01(done)) }
     },
+    podio: function (t, dur, ic) { // the 3rd rises first, the winner last
+      var cl = palette6(), xs = [450, 200, 700], hs = [300, 210, 150]
+      for (var i = 2; i >= 0; i--) {
+        var k = 2 - i, h = hs[i] * ease(prog(t, 0.2 + k * 0.35, 0.7 + k * 0.35)), p = back(prog(t, 0.5 + k * 0.35, 0.9 + k * 0.35)), top = 780 - hs[i]
+        if (h > 1) { rr(xs[i] - 115, 780 - h, 230, h, [18, 18, 0, 0]); fill(A(cl[i], i ? 0.3 : 0.5)) }
+        if (h > 90) label(String(i + 1), 64, '#fff', xs[i], 780 - h + 50, 200)
+        if (!i && p > 0.5) glow(xs[0], top - 110, 230, P.gold, 0.35 * clamp01(p))
+        tile(xs[i], top - 110, (i ? 0.58 : 0.72) * p, ic[i].id, cl[i], t + i, 1)
+        tagT(ic[i].label, xs[i], 815, 32, 230, clamp01(p))
+      }
+    },
+    percorso: function (t, dur, ic) { // a dot travels the road and lights each stop
+      var cl = palette6(), m = Math.min(4, ic.length), pts = m === 3 ? [[150, 640], [450, 300], [750, 620]] : [[130, 660], [330, 300], [570, 640], [780, 280]]
+      var g = ease(prog(t, 0.3, Math.max(1.4, dur * 0.85))), s = Math.min(m - 1.0001, g * (m - 1)), k = Math.floor(s), f = s - k
+      c.save(); c.setLineDash([18, 16]); c.lineDashOffset = -t * 30; path(pts); stroke(A(WH, 0.35), 10, 'round', 'round'); c.restore()
+      for (var j = 0; j < m; j++) {
+        var p = back(prog(t, 0.1 + j * 0.15, 0.5 + j * 0.15))
+        tile(pts[j][0], pts[j][1], 0.5 * p, ic[j].id, cl[j], t + j, g * (m - 1) >= j - 0.05 ? 1 : 0.45)
+        tagT(ic[j].label, pts[j][0], pts[j][1] + 100, 30, 220, clamp01(p))
+      }
+      var px = lerp(pts[k][0], pts[k + 1][0], f), py = lerp(pts[k][1], pts[k + 1][1], f)
+      glow(px, py, 80, P.gold, 0.6); circ(px, py, 18); fill(P.gold)
+    },
+    imbuto: function (t, dur, ic) { // several things go in, one comes out
+      var cl = palette6(), m = Math.min(4, ic.length), ins = m - 1, xs = ins === 2 ? [300, 600] : [210, 450, 690]
+      path([[160, 340], [740, 340], [520, 560], [520, 640], [380, 640], [380, 560]], true); fill(A(WH, 0.08)); stroke(A(WH, 0.5), 8, 'round', 'round')
+      for (var j = 0; j < ins; j++) {
+        var a = back(prog(t, 0.1 + j * 0.15, 0.5 + j * 0.15)), d = easeIn(prog(t, 0.8 + j * 0.25, 1.3 + j * 0.25))
+        tile(lerp(xs[j], 450, d), lerp(220, 560, d), 0.45 * a * (1 - d * 0.6), ic[j].id, cl[j], t + j, 1 - d)
+        tagT(ic[j].label, xs[j], 115, 30, 220, a * (1 - d))
+      }
+      var o = back(prog(t, 1.1 + ins * 0.25, 1.5 + ins * 0.25))
+      if (o > 0) glow(450, 750, 160, P.green, 0.4 * clamp01(o))
+      tile(450, 750, 0.6 * o, ic[ins].id, P.green, t, 1); tagT(ic[ins].label, 450, 868, 34, 600, clamp01(o))
+    },
+    orbita: function (t, dur, ic) { // the others circle around the first one, the far side behind it
+      var cl = palette6(), m = Math.min(3, ic.length - 1), cx = 450, cy = 400, pop = back(prog(t, 0, 0.45)), al = ease(prog(t, 0.4, 0.9)), items = []
+      c.save(); c.globalAlpha *= al; ell(cx, cy, 330, 150); stroke(A(WH, 0.18), 4); c.restore()
+      for (var j = 0; j < m; j++) { var a = t * 0.8 + j * 2 * PI / m; items.push({ z: sin(a), j: j, x: cx + cos(a) * 330, y: cy + sin(a) * 150 }) }
+      var draw1 = function (o) { tile(o.x, o.y, (0.42 + 0.12 * o.z) * al, ic[o.j + 1].id, cl[(o.j + 1) % 6], t + o.j, 0.6 + 0.4 * (o.z + 1) / 2) }
+      items.filter(function (o) { return o.z < 0 }).forEach(draw1)
+      tile(cx, cy, 0.85 * pop, ic[0].id, cl[0], t, 1)
+      items.filter(function (o) { return o.z >= 0 }).forEach(draw1)
+      tagT(ic[0].label, cx, 680, 44, 600, pop)
+      tagT(ic.slice(1, m + 1).map(function (x) { return x.label }).filter(Boolean).join(' · '), cx, 760, 30, 760, al)
+    },
+    scoppio: function (t, dur, ic) { // it trembles, then bursts into copies of itself
+      var cl = palette6(), hit = Math.min(1.1, dur * 0.4), pre = prog(t, 0.1, hit), since = t - hit, shake = since < 0 ? sin(t * 50) * 8 * pre : 0
+      if (since > 0) {
+        ring(450, 400, 120 + since * 600, A(P.gold, Math.max(0, 1 - since * 1.5)), 14)
+        for (var k = 0; k < 12; k++) {
+          var a = k * PI / 6 + 0.2, r = 170 + easeOut(clamp01(since / 1.2)) * 300
+          c.save(); c.globalAlpha *= Math.max(0, 1 - clamp01((since - 0.8) / 1)); c.translate(450 + cos(a) * r, 400 + sin(a) * r); c.rotate(since * 2 + k); c.scale(0.22, 0.22); ICONS[ic[0].id](cl[k % 6], t); c.restore()
+        }
+      }
+      tile(450 + shake, 400, (since > 0 ? 1.1 + 0.15 * Math.exp(-since * 5) : 0.8 + 0.2 * pre) * back(prog(t, 0, 0.4)), ic[0].id, cl[0], t, 1)
+      tagT(ic[0].label, 450, 720, 50, 700, clamp01(since * 3))
+    },
+    pila: function (t, dur, ic) { // pieces drop one on another and build a tower
+      var cl = palette6(), m = Math.min(4, ic.length), step = Math.max(0.35, dur * 0.7 / m)
+      rr(250, 790, 400, 22, 11); fill(A(WH, 0.5))
+      for (var j = 0; j < m; j++) {
+        var y = 790 - 88 - j * 165, d = prog(t, 0.2 + j * step, 0.6 + j * step), land = t - (0.6 + j * step)
+        if (d <= 0) continue
+        var yy = lerp(-120, y, easeIn(d)) - (land > 0 ? sin(Math.min(land * 12, PI)) * 12 * Math.exp(-land * 4) : 0)
+        tile(450, yy, 0.62, ic[j].id, cl[j], t + j, 1)
+        tagT(ic[j].label, 700, yy, 34, 300, land > 0 ? 1 : 0)
+      }
+    },
+    semaforo: function (t, dur, ic) { // red, yellow, then green: go
+      var ph = clamp01(t / Math.max(1.2, dur * 0.7)), on = ph < 0.34 ? 0 : ph < 0.67 ? 1 : 2, lc = [P.red, P.gold, P.green], go = on === 2 ? easeOut(clamp01((ph - 0.67) * 3)) : 0
+      path([[280, 660], [280, 830]]); stroke(A(WH, 0.4), 16); rr(190, 150, 180, 520, 50); fill(P.navy); stroke(A(WH, 0.4), 8)
+      for (var k = 0; k < 3; k++) { var y = 240 + k * 170; if (k === on) glow(280, y, 140, lc[k], 0.5); circ(280, y, 62); fill(k === on ? lc[k] : A(lc[k], 0.18)) }
+      tile(620 + go * 40, 410, 0.95 * back(prog(t, 0, 0.45)), ic[0].id, lc[on], t, 1)
+      okMark(750, 290, 40, go)
+      tagT(ic[0].label, 640, 610, 44, 420, 1)
+    },
+    settimana: function (t, dur, ic) { // seven days ticked one by one
+      var col = palette6()[0], days = ['L', 'M', 'M', 'G', 'V', 'S', 'D'], step = Math.max(0.2, (dur * 0.75 - 0.6) / 7)
+      tile(450, 270, 0.9 * back(prog(t, 0, 0.45)), ic[0].id, col, t, 1); tagT(ic[0].label, 450, 440, 42, 700, 1)
+      for (var k = 0; k < 7; k++) {
+        var x = 105 + k * 115, y = 640, d = prog(t, 0.6 + k * step, 0.9 + k * step)
+        rr(x - 48, y - 60, 96, 120, 20); fill(d > 0 ? A(col, 0.25 + 0.4 * d) : A(WH, 0.08))
+        label(days[k], 34, '#fff', x, y - 28, 90); okMark(x, y + 24, 24, d)
+      }
+    },
   }
 
   S.icone = function (t, dur, sh) {
@@ -1197,7 +1305,8 @@
     if (!ic.length) ic = [{ id: 'lampadina', label: '' }]
     var L = LAYOUTS[sh.layout] ? sh.layout : ic.length >= 3 ? 'catena' : ic.length === 2 ? (sh.link === 'vs' ? 'sfida' : 'flusso') : 'eroe'
     if (ic.length < LAYOUTS[L][1]) ic = fitIcons(ic, L, '') // a hand-written config may give fewer icons than the layout shows
-    LAY[L](t, dur, ic, sh)
+    STY = STYLES[sh.style] ? sh.style : 'neon'
+    try { LAY[L](t, dur, ic, sh) } finally { STY = 'neon' }
   }
   /* the owner's preset (template-originale.html), kept verbatim: it is the reference for mode race */
   var RACE_SAMPLE = {
@@ -1514,7 +1623,7 @@
         var ic = iconList(ch.icons), sc = String(ch.scene || ''), dot = sc.split('.')
         var lay = LAYOUTS[ch.layout] ? ch.layout : LAYOUTS[dot[1]] ? dot[1] : LAYOUTS[sc] ? sc : ''
         o.scene = ic.length || lay ? 'icone' : META[ch.scene] && !(i && ch.scene === 'domanda') ? ch.scene : guess(answer, i ? '' : 'hook', prev); prev = o.scene
-        if (o.scene === 'icone') { o._ic = ic; o._lay = lay; o._dom = DOMAINS[dot[0]] ? dot[0] : '' }
+        if (o.scene === 'icone') { o._ic = ic; o._lay = lay; o._dom = DOMAINS[dot[0]] ? dot[0] : ''; o._sty = STYLES[dot[2]] ? dot[2] : STYLES[ch.style] ? ch.style : '' }
       }
       if (DATA[mode]) { o.startIdx = Math.round(num(ch.startIdx, NaN)); o.endIdx = Math.round(num(ch.endIdx, NaN)) }
       return o
@@ -1550,8 +1659,12 @@
       var talk = chapters.filter(function (ch) { return moneyTalk(lineOf(ch)) }).length
       var noMoney = talk < Math.max(1, Math.ceil(chapters.length / 3)) && !moneyTalk(intro.title)
       var dom = domainOf(intro.title + ' ' + chapters.map(lineOf).join(' ')), prevL = ''
+      // one style for the whole video: the first one asked for, else one picked from the title (same title, same look)
+      var asked = chapters.filter(function (ch) { return ch._sty })[0], styles = Object.keys(STYLES)
+      var vStyle = asked ? asked._sty : styles[String(intro.title).split('').reduce(function (s, x) { return s + x.charCodeAt(0) }, 0) % styles.length]
       chapters.forEach(function (ch, i) {
-        var line = lineOf(ch)
+        var line = lineOf(ch), sty = ch._sty || vStyle
+        delete ch._sty; delete ch.style
         if (noMoney && !(NEUTRAL[ch.scene] && !(i && ch.scene === 'domanda'))) ch.scene = 'icone'
         var guessed = !(ch._ic && ch._ic.length), ic = !guessed ? ch._ic : ch.scene === 'icone' ? iconsFor(line, 3) : [], L = ch._lay, d = ch._dom || dom
         delete ch._ic; delete ch._lay; delete ch._dom; delete ch.icons; delete ch.layout
@@ -1560,6 +1673,7 @@
         if (guessed && LAYOUTS[L][2] === 2 && ic.length > 2) ic = sidesOf(ic, line)
         ch.icons = fitIcons(ic, L, d) // icons then layout: validate(validate(x)) keeps the same key order
         ch.layout = prevL = L
+        ch.style = sty
       })
     }
     out.chapters = chapters
@@ -1596,7 +1710,7 @@
     var dm = low.match(/\b([1-9]|[12]\d|3[01])\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)/)
     var ym = low.match(/\b(\d{1,2})\s+anni\b/)
     return { title: title, alt: alt, number: /\d/.test(ch.big || '') ? ch.big : numberIn(text), day: dm ? +dm[1] : 0, years: ym && +ym[1] >= 1 && +ym[1] <= 60 ? +ym[1] : 0,
-      icons: ch.icons || [], layout: ch.layout || '', link: /(\bvs\b|\bcontro\b|invece|mentre|oppure|differenz|confront)/.test(low) ? 'vs' : 'flow' }
+      icons: ch.icons || [], layout: ch.layout || '', style: ch.style || '', link: /(\bvs\b|\bcontro\b|invece|mentre|oppure|differenz|confront)/.test(low) ? 'vs' : 'flow' }
   }
   /** opts.durations (optional, final seconds, e.g. the real voice measured at opts.speed): {intro, chapters: [], provocation, cta}; without them time comes from word count.
       opts.speed (1–2, default config.speed or 1) divides every estimated duration and the animation pacing: 2 = half as long. */
@@ -3225,7 +3339,9 @@
     ok(named.chapters[0].scene === 'icone' && named.chapters[0].layout === 'ciclo' && named.chapters[0].icons.length >= 3 && JSON.stringify(validate(named)) === JSON.stringify(named), 'named catalogue scene: ' + JSON.stringify(named.chapters[0]))
     var sides = validate(fromTopic('differenza tra intelligenza artificiale locale e via server').config).chapters[0]
     ok(sides.layout === 'sfida' && sides.icons.map(function (x) { return x.id }).join() === 'telefono,server', 'comparison sides: ' + JSON.stringify(sides.icons))
-    ok(catalog().length >= 800 && Object.keys(LAYOUTS).every(function (l) { return LAY[l] }), 'catalogue size ' + catalog().length)
+    var styled = validate({ mode: 'explainer', intro: { title: 'In viaggio' }, chapters: [{ title: 'Le tappe', scene: 'viaggi.percorso.pastello' }, { title: 'Valigia pronta', icons: ['valigia:Valigia'] }] })
+    ok(styled.chapters[0].layout === 'percorso' && styled.chapters.every(function (x) { return x.style === 'pastello' }) && JSON.stringify(validate(styled)) === JSON.stringify(styled), 'style from the scene id, one per video: ' + JSON.stringify(styled.chapters))
+    ok(catalog().length >= 4000 && Object.keys(LAYOUTS).every(function (l) { return LAY[l] }), 'catalogue size ' + catalog().length)
     ok(validate({ mode: 'explainer', chapters: [{ title: 'Ti versa i dividendi', html: 'Un ETF a distribuzione.', scene: 'distribuzione' }] }).chapters[0].scene === 'distribuzione', 'money video keeps money scenes')
     // the TER case against a hand calculation: 10.000 € at 6% gross minus TER for 20 years → 10000·1,0585^20 ≈ 31.176, 10000·1,045^20 ≈ 24.117
     var ter = fromTopic('differenza tra TER 0,15% e 1,5%').config, lastP = ter.data[ter.data.length - 1]
@@ -3250,6 +3366,7 @@
     samples: SAMPLES, selfCheck: selfCheck, catalog: catalog,
     icons: Object.keys(ICONS), layouts: Object.keys(LAYOUTS).map(function (id) { return { id: id, name: LAYOUTS[id][0] } }),
     domains: Object.keys(DOMAINS).map(function (id) { return { id: id, name: DOMAINS[id][0] } }),
+    styles: Object.keys(STYLES).map(function (id) { return { id: id, name: STYLES[id] } }),
   }
   if (typeof window !== 'undefined') window.VideoEngine = api
   if (typeof module !== 'undefined') module.exports = api
