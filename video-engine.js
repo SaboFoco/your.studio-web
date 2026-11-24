@@ -27,6 +27,7 @@
     tempo: ['Anni che passano', 'Tempo'],
     obiettivo: ['Bersaglio', ''],
     errore: ['Attenzione', 'Attenzione'],
+    icone: ['Icone dell’argomento (telefono, server, cloud…)', ''],
     cta: ['Logo e invito', ''],
   }
   var IDS = Object.keys(META)
@@ -567,6 +568,154 @@
     })
     label(sh.alt || 'Link in bio', 40, A('#ffffff', 0.8 * clamp01(b)), 450, 790, 860, 700)
   }
+
+  /* ---------- icons: pictograms for topics that are not about money (scene "icone") ----------
+     Each draws centred on 0,0 inside ±105: white strokes, the accent k, t animates the small details. */
+  var WH = '#ffffff'
+  function sk(w) { stroke(WH, w || 10, 'round', 'round') }
+  function star4(x, y, r) { c.beginPath(); c.moveTo(x, y - r); c.quadraticCurveTo(x, y, x + r, y); c.quadraticCurveTo(x, y, x, y + r); c.quadraticCurveTo(x, y, x - r, y); c.quadraticCurveTo(x, y, x, y - r); c.closePath() }
+  function man(x, y, s, col) { circ(x, y - 45 * s, 38 * s); fill(col); c.beginPath(); c.arc(x, y + 92 * s, 76 * s, PI, 0); c.closePath(); fill(col) }
+  var ICONS = {
+    telefono: function (k) { rr(-62, -104, 124, 208, 26); fill(P.deep); sk(); rr(-48, -84, 96, 150, 10); fill(A(k, 0.6)); rr(-36, -70, 52, 16, 8); fill(A(WH, 0.85)); rr(-16, -44, 52, 16, 8); fill(A(WH, 0.6)); circ(0, 86, 9); fill(WH) },
+    server: function (k, t) { for (var i = 0; i < 3; i++) { var y = -92 + i * 64; rr(-92, y, 184, 52, 12); fill(P.deep); sk(9); circ(-60, y + 26, 9); fill(frac(t * 1.5 + i / 3) < 0.5 ? k : A(WH, 0.3)); path([[-24, y + 26], [64, y + 26]]); stroke(A(WH, 0.5), 8, 'round') } },
+    cloud: function (k) { c.beginPath(); c.arc(-50, 8, 45, PI * 0.5, PI * 1.5); c.arc(-5, -30, 58, PI, PI * 1.9); c.arc(52, 5, 48, PI * 1.6, PI * 2.5); c.closePath(); fill(A(k, 0.6)); sk() },
+    ia: function (k, t) { star4(-12, 12, 88 * (1 + 0.06 * sin(t * 4))); fill(k); sk(7); star4(64, -62, 30 * (1 + 0.15 * sin(t * 4 + 2))); fill(WH) },
+    chip: function (k, t) { for (var i = 0; i < 4; i++) { var o = -45 + i * 30; path([[o, -70], [o, -96]]); sk(9); path([[o, 70], [o, 96]]); sk(9); path([[-70, o], [-96, o]]); sk(9); path([[70, o], [96, o]]); sk(9) } rr(-70, -70, 140, 140, 18); fill(P.deep); sk(); rr(-38, -38, 76, 76, 10); fill(A(k, 0.55 + 0.4 * Math.abs(sin(t * 2)))) },
+    lucchetto: function (k) { c.beginPath(); c.arc(0, -28, 48, PI, 0); stroke(WH, 16, 'round'); rr(-76, -30, 152, 124, 22); fill(k); sk(); circ(0, 18, 15); fill(P.deep); rr(-6, 22, 12, 38, 4); fill(P.deep) },
+    wifi: function (k, t) { var on = Math.floor(frac(t * 0.8) * 4); [40, 80, 120].forEach(function (r, i) { c.beginPath(); c.arc(0, 62, r, PI * 1.25, PI * 1.75); stroke(i < on ? WH : A(WH, 0.3), 16, 'round') }); circ(0, 62, 14); fill(k) },
+    offline: function () { [40, 80, 120].forEach(function (r) { c.beginPath(); c.arc(0, 62, r, PI * 1.25, PI * 1.75); stroke(A(WH, 0.35), 16, 'round') }); circ(0, 62, 14); fill(A(WH, 0.35)); path([[-88, -78], [88, 92]]); stroke(P.red, 18, 'round') },
+    fulmine: function () { path([[22, -105], [-60, 12], [-5, 12], [-26, 105], [62, -16], [6, -16]], true); fill(P.gold); sk(7) },
+    documento: function (k) { path([[-66, -96], [34, -96], [70, -60], [70, 96], [-66, 96]], true); fill(P.deep); sk(); path([[34, -96], [34, -60], [70, -60]]); sk(8); for (var i = 0; i < 4; i++) { rr(-44, -28 + i * 30, i === 3 ? 60 : 88, 12, 6); fill(A(k, 0.85)) } },
+    persona: function (k) { man(0, 0, 1.1, k) },
+    gruppo: function (k) { man(-62, 18, 0.62, A(WH, 0.75)); man(62, 18, 0.62, A(WH, 0.75)); man(0, -4, 0.8, k) },
+    globo: function (k, t) { circ(0, 0, 92); fill(A(k, 0.5)); sk(9); ell(0, 0, 92 * Math.abs(cos(t * 0.8)), 92); sk(6); path([[-92, 0], [92, 0]]); sk(6); path([[-78, -46], [78, -46]]); sk(5); path([[-78, 46], [78, 46]]); sk(5) },
+    orologio: function (k, t) { circ(0, 0, 92); fill(P.deep); sk(); var a = t * 0.5, b = t * 4; path([[0, 0], [sin(a) * 46, -cos(a) * 46]]); sk(12); path([[0, 0], [sin(b) * 70, -cos(b) * 70]]); stroke(k, 9, 'round'); circ(0, 0, 10); fill(k) },
+    tachimetro: function (k, t) { var v = 0.55 + 0.4 * sin(t * 1.5), a = PI + PI * v; c.beginPath(); c.arc(0, 32, 92, PI, 0); stroke(A(WH, 0.25), 22, 'butt'); c.beginPath(); c.arc(0, 32, 92, PI, a); stroke(k, 22, 'butt'); path([[0, 32], [cos(a) * 74, 32 + sin(a) * 74]]); sk(10); circ(0, 32, 14); fill(WH) },
+    casa: function (k) { rr(-70, -16, 140, 112, 10); fill(A(k, 0.6)); sk(); path([[-98, -6], [0, -98], [98, -6]]); sk(14); rr(-20, 36, 40, 60, 6); fill(P.deep) },
+    chat: function (k, t) { path([[-44, 50], [-64, 98], [4, 50]], true); fill(A(k, 0.65)); rr(-96, -78, 192, 132, 36); fill(A(k, 0.65)); sk(); for (var i = 0; i < 3; i++) { circ(-42 + i * 42, -12, 12 * (1 + 0.3 * Math.max(0, sin(t * 6 - i)))); fill(WH) } },
+    codice: function (k) { path([[-40, -62], [-96, 0], [-40, 62]]); sk(16); path([[40, -62], [96, 0], [40, 62]]); sk(16); path([[18, -82], [-18, 82]]); stroke(k, 14, 'round') },
+    batteria: function (k, t) { rr(-96, -50, 176, 100, 18); fill(P.deep); sk(); rr(80, -22, 18, 44, 6); fill(WH); rr(-83, -37, 150 * (0.2 + 0.78 * frac(t * 0.3)), 74, 10); fill(k) },
+    lampadina: function (k, t) { for (var i = 0; i < 5; i++) { var a = PI * (1.1 + i * 0.2); path([[cos(a) * 92, -22 + sin(a) * 92], [cos(a) * 118, -22 + sin(a) * 118]]); stroke(A(P.gold, 0.5 + 0.5 * sin(t * 4)), 10, 'round') } c.beginPath(); c.arc(0, -22, 70, PI * 0.8, PI * 2.2); c.lineTo(30, 50); c.lineTo(-30, 50); c.closePath(); fill(A(P.gold, 0.9)); sk(); rr(-32, 60, 64, 14, 7); fill(WH); rr(-22, 80, 44, 14, 7); fill(WH) },
+    ingranaggio: function (k, t) { c.save(); c.rotate(t * 0.8); for (var i = 0; i < 8; i++) { c.rotate(PI / 4); rr(-17, -100, 34, 40, 6); fill(k) } circ(0, 0, 72); fill(k); circ(0, 0, 30); fill(P.deep); c.restore() },
+    occhio: function (k, t) { c.save(); c.scale(1, frac(t * 0.4) < 0.04 ? 0.15 : 1); c.beginPath(); c.moveTo(-104, 0); c.quadraticCurveTo(0, -96, 104, 0); c.quadraticCurveTo(0, 96, -104, 0); fill(WH); circ(0, 0, 40); fill(k); circ(0, 0, 17); fill(P.deep); c.restore() },
+    carrello: function (k) { rr(-38, -78, 42, 42, 6); fill(k); rr(12, -68, 44, 32, 6); fill(A(k, 0.7)); path([[-102, -72], [-72, -72], [-46, 40], [66, 40], [86, -40], [-62, -40]]); sk(12); circ(-30, 74, 16); fill(WH); circ(56, 74, 16); fill(WH) },
+    auto: function (k) { path([[-60, -10], [-36, -62], [40, -62], [66, -10]], true); fill(A(k, 0.6)); sk(8); rr(-104, -12, 208, 62, 20); fill(k); sk(8); [-56, 56].forEach(function (x) { circ(x, 54, 24); fill(P.deep); sk(8) }) },
+    cuore: function (k, t) { var s = 1 + 0.08 * Math.max(0, sin(t * 6)); c.save(); c.scale(s, s); c.beginPath(); c.moveTo(0, 90); c.bezierCurveTo(-125, 10, -90, -98, 0, -40); c.bezierCurveTo(90, -98, 125, 10, 0, 90); fill(P.red); sk(7); c.restore() },
+    libro: function (k) { [-1, 1].forEach(function (d) { path([[0, -62], [96 * d, -84], [96 * d, 70], [0, 92]], true); fill(P.deep); sk(9); for (var i = 0; i < 3; i++) { path([[18 * d, -34 + i * 34], [76 * d, -44 + i * 34]]); stroke(A(k, 0.85), 8, 'round') } }) },
+    euro: function () { circ(0, 0, 92); fill(P.gold); stroke(P.goldLo, 8); label('€', 120, P.goldLo, 0, 6) },
+    grafico: function (k, t) { [50, 92, 70, 132].forEach(function (h, i) { var hh = h * ease(prog(t, 0.2 + i * 0.12, 0.6 + i * 0.12)); rr(-88 + i * 46, 86 - hh, 34, hh, 8); fill(i === 3 ? k : A(WH, 0.5)) }); path([[-100, 92], [100, 92]]); sk(8) },
+    scudo: function (k, t) { c.beginPath(); c.moveTo(0, -102); c.quadraticCurveTo(40, -76, 86, -72); c.quadraticCurveTo(88, 56, 0, 106); c.quadraticCurveTo(-88, 56, -86, -72); c.quadraticCurveTo(-40, -76, 0, -102); fill(k); sk(8); poly([[-38, 4], [-8, 34], [44, -26]], easeOut(prog(t, 0.4, 0.9)), WH, 16) },
+    chiave: function () { circ(-52, 0, 42); fill(P.gold); circ(-52, 0, 16); fill(P.deep); rr(-16, -12, 118, 24, 8); fill(P.gold); rr(60, 10, 14, 28, 4); fill(P.gold); rr(84, 10, 14, 20, 4); fill(P.gold) },
+    posta: function (k) { rr(-100, -66, 200, 132, 16); fill(A(k, 0.6)); sk(); path([[-100, -66], [0, 14], [100, -66]]); sk() },
+    calendario: function (k, t) { rr(-92, -74, 184, 170, 18); fill(P.deep); sk(); rr(-92, -74, 184, 44, [18, 18, 0, 0]); fill(k); rr(-56, -96, 14, 38, 7); fill(WH); rr(42, -96, 14, 38, 7); fill(WH); var on = Math.floor(frac(t * 0.5) * 9); for (var i = 0; i < 9; i++) { rr(-62 + (i % 3) * 46, -14 + Math.floor(i / 3) * 34, 32, 22, 6); fill(i === on ? k : A(WH, 0.4)) } },
+    ricerca: function (k) { path([[24, 24], [86, 86]]); stroke(WH, 24, 'round'); circ(-20, -20, 58); fill(A(k, 0.35)); sk(16) },
+    stella: function () { var p = []; for (var i = 0; i < 10; i++) { var a = -PI / 2 + i * PI / 5, r = i % 2 ? 42 : 100; p.push([cos(a) * r, sin(a) * r + 8]) } path(p, true); fill(P.gold); sk(7) },
+  }
+  /** Words that call an icon, matched anywhere in the chapter (a leading space = start of a word). */
+  var IKW = {
+    telefono: ['telefono', 'smartphone', 'cellulare', 'dispositivo', 'iphone', 'locale'],
+    server: ['server', 'data center', 'datacenter', 'remoto'],
+    cloud: ['cloud', 'nuvola', 'online'],
+    ia: [' ia ', ' ai ', 'intelligenza artificiale', 'modello', 'modelli', 'chatgpt', 'gemini', 'claude', 'llm', 'algoritm'],
+    chip: ['chip', 'processore', 'hardware', 'gpu', 'calcolo'],
+    lucchetto: ['privacy', 'privat', 'sicurezza', 'sicuro', 'password', 'protett', 'riservat'],
+    offline: ['offline', 'senza internet', 'senza rete', 'senza connessione'],
+    wifi: ['internet', 'connession', ' rete', 'wifi', 'wi-fi'],
+    fulmine: ['veloc', 'rapid', 'istantane', 'energia', 'elettric', 'subito'],
+    documento: ['document', ' pdf', ' file', 'testo', 'pagine', 'riassunt', 'contratt', 'modulo'],
+    gruppo: ['persone', 'squadra', ' team', 'famiglia', 'utenti', 'clienti', 'tutti'],
+    persona: ['utente', 'persona', 'cliente', 'chi usa'],
+    globo: ['mondo', 'global', 'paesi', 'estero', 'internazional'],
+    orologio: [' ore ', 'minuti', 'secondi', 'attesa', 'ritardo', 'latenza', 'tempo'],
+    tachimetro: ['prestazion', 'potenza', 'performance', 'livello', 'efficien'],
+    casa: [' casa', 'immobil', 'affitto', 'abitazion', 'appartament'],
+    chat: ['chat', 'messagg', 'richiest', 'rispost', 'conversazion', 'domand'],
+    codice: ['codice', 'programm', 'software', 'sviluppat', ' api'],
+    batteria: ['batteria', 'consumo', 'autonomia', 'ricaric'],
+    ingranaggio: ['impostazion', 'processo', 'automat', 'meccanism', 'configur', 'funziona'],
+    occhio: [' vede', 'guarda', 'trasparen', 'visibil', 'osserv'],
+    carrello: ['spesa', 'acquist', 'negozio', 'supermercat', 'compri'],
+    auto: [' auto ', 'macchina', ' guida', 'viaggi', 'benzina'],
+    cuore: ['salute', 'cuore', 'amore', 'benessere'],
+    libro: ['studi', 'scuola', 'impar', 'libro', 'lezion', ' corso'],
+    euro: ['€', 'euro', 'soldi', 'costo', 'costi', 'prezzo', 'abbonament', 'pagare', 'gratis', 'gratuit'],
+    grafico: ['dati', 'statistic', 'percentual', 'numeri', 'crescita'],
+    scudo: ['proteg', 'difesa', 'rischi', 'truff'],
+    chiave: ['chiave', 'accesso', 'login', 'credenzial'],
+    posta: ['email', 'e-mail', ' mail', 'posta', 'newsletter'],
+    calendario: ['giorni', 'settiman', ' mese', 'scadenz', 'calendario'],
+    ricerca: ['cerca', 'ricerca', 'trovare', 'google', 'motore di'],
+    stella: ['miglior', 'qualità', 'stelle', 'recension'],
+    lampadina: ['idea', 'trucco', 'capire', 'scopri', 'consiglio'],
+  }
+  /** The whole word a match falls in, as a short label: "locale" -> "Locale", "ia" -> "IA". */
+  function wordAt(s, i) {
+    while (s.charAt(i) === ' ') i++
+    while (i > 0 && /[a-zà-ù0-9]/.test(s.charAt(i - 1))) i--
+    var m = s.slice(i).match(/^[a-zà-ù0-9€-]+/), w = m ? m[0] : ''
+    return w.length <= 3 ? w.toUpperCase() : cut(w.charAt(0).toUpperCase() + w.slice(1), 14)
+  }
+  /** Up to `max` icons for a line, in the order the words appear, each labelled with the word that called it. */
+  function iconsFor(text, max) {
+    var low = ' ' + String(text || '').toLowerCase().replace(/[’'.,:;!?()"«»]/g, ' ') + ' ', hits = []
+    Object.keys(IKW).forEach(function (id) {
+      var at = -1
+      IKW[id].forEach(function (k) { var j = low.indexOf(k); if (j >= 0 && (at < 0 || j < at)) at = j })
+      if (at >= 0) hits.push({ id: id, at: at })
+    })
+    hits.sort(function (a, b) { return a.at - b.at })
+    var out = [], seen = {}
+    hits.forEach(function (h) { var l = wordAt(low, h.at); if (out.length < (max || 2) && !seen[l]) { seen[l] = 1; out.push({ id: h.id, label: l }) } })
+    return out
+  }
+  /** chapter.icons from the AI: ["telefono", "server:Server"] or [{id, label}]; unknown ids are dropped. */
+  function iconList(v) {
+    return arr(v).map(function (x) {
+      var s = typeof x === 'string' ? x : x && typeof x === 'object' ? String(x.id || '') + (x.label ? ':' + x.label : '') : ''
+      var p = s.split(':'), id = norm(p[0]).replace(/ /g, '')
+      return ICONS[id] ? { id: id, label: str(p.slice(1).join(':'), 14) } : null
+    }).filter(Boolean).slice(0, 3)
+  }
+  /** A video is "about money" when enough of its chapters talk money: only then the money scenes (coins, ETF, charts) fit. */
+  var MONEY_KW = ['etf', 'dividend', ' azion', 'obbligazion', 'borsa', 'invest', 'rendiment', 'risparm', 'interesse composto', 'interessi', 'tasse', 'fisco', 'fiscal', 'inflazion', 'mutuo', 'pension', 'portafoglio', 'cedol', 'plusvalen', 'minusvalen', 'commission', 'bitcoin', 'cripto', 'patrimoni', ' btp', ' fondi ', ' fondo ', 'tassi', 'conto deposito', 'stipendi', 'capitale']
+  function moneyTalk(s) { s = ' ' + String(s || '').toLowerCase() + ' '; return MONEY_KW.some(function (k) { return s.indexOf(k) >= 0 }) }
+  var NEUTRAL = { domanda: 1, checklist: 1, errore: 1, obiettivo: 1, tempo: 1, protezione: 1, cta: 1, icone: 1 }
+
+  S.icone = function (t, dur, sh) {
+    var ic = (sh.icons || []).filter(function (x) { return ICONS[x.id] }).slice(0, 3)
+    if (!ic.length) ic = [{ id: 'lampadina', label: '' }]
+    var n = ic.length, cols = [P.green, P.blue, P.gold], cy = n === 1 ? 400 : 420
+    var pos = n === 1 ? [[450, cy]] : n === 2 ? [[205, cy], [695, cy]] : [[150, cy], [450, cy], [750, cy]]
+    var s = n === 1 ? 1.5 : n === 2 ? 1.15 : 0.8
+    function lane(x1, x2, y, col, rev, al) { // a dashed wire with packets running along it
+      if (al <= 0) return
+      c.save(); c.globalAlpha *= al
+      c.setLineDash([14, 14]); c.lineDashOffset = (rev ? 1 : -1) * t * 40
+      path([[x1, y], [x2, y]]); stroke(A(WH, 0.35), 6, 'round'); c.setLineDash([])
+      for (var j = 0; j < 3; j++) {
+        var p = frac(t * 0.6 + j / 3), x = rev ? lerp(x2, x1, p) : lerp(x1, x2, p)
+        c.save(); c.globalAlpha *= Math.min(1, p * 6, (1 - p) * 6); rr(x - 18, y - 12, 36, 24, 9); fill(col); c.restore()
+      }
+      c.restore()
+    }
+    if (n === 1) for (var k = 0; k < 3; k++) { var ph = frac(t * 0.6 + k / 3); ring(450, cy, 220 + 200 * ph, A(cols[0], (1 - ph) * 0.4), 8) }
+    var wires = ease(prog(t, 0.55, 0.9)), half = 130 * s + 14
+    if (n > 1 && sh.link !== 'vs') for (var w = 0; w < n - 1; w++) {
+      lane(pos[w][0] + half, pos[w + 1][0] - half, cy - 26, cols[w], false, wires)
+      lane(pos[w][0] + half, pos[w + 1][0] - half, cy + 26, cols[w + 1], true, wires)
+    }
+    ic.forEach(function (it, i) {
+      var pop = back(prog(t, 0.08 + i * 0.2, 0.55 + i * 0.2)), col = cols[i], bob = sin(t * 2 + i * 1.7) * 6
+      if (pop <= 0) return
+      withT(pos[i][0], pos[i][1] + bob, pop * s, function () {
+        glow(0, 0, 200, col, 0.22)
+        rr(-130, -130, 260, 260, 64); fill(grad(P.steelHi, P.panel, -130, -130, 260, 260)); stroke(A(col, 0.9), 7)
+        c.save(); c.scale(0.92, 0.92); ICONS[it.id](col, t + i); c.restore()
+      })
+      if (it.label) { c.save(); c.globalAlpha *= clamp01(pop); label(it.label, n === 3 ? 40 : 48, '#fff', pos[i][0], pos[i][1] + 130 * s + 52, n === 3 ? 270 : 400); c.restore() }
+    })
+    if (n === 2 && sh.link === 'vs') withT(450, cy, back(prog(t, 0.5, 0.9)) * (1 + 0.05 * sin(t * 5)), function () { circ(0, 0, 62); fill('#fff'); label('VS', 48, P.navy, 0, 0) })
+  }
   /* the owner's preset (template-originale.html), kept verbatim: it is the reference for mode race */
   var RACE_SAMPLE = {
     sector: "FINANZA • 10Y BATTLE",
@@ -877,7 +1026,11 @@
       if (big) o.big = big
       if (caption) o.caption = caption
       // the "?" scene only opens the video: a later chapter answers, so its scene comes from the answer
-      if (mode === 'explainer') { o.scene = META[ch.scene] && !(i && ch.scene === 'domanda') ? ch.scene : guess(answer, i ? '' : 'hook', prev); prev = o.scene }
+      if (mode === 'explainer') {
+        var ic = iconList(ch.icons)
+        o.scene = ic.length ? 'icone' : META[ch.scene] && !(i && ch.scene === 'domanda') ? ch.scene : guess(answer, i ? '' : 'hook', prev); prev = o.scene
+        if (ic.length) o.icons = ic // after scene: validate(validate(x)) keeps the same key order
+      }
       if (DATA[mode]) { o.startIdx = Math.round(num(ch.startIdx, NaN)); o.endIdx = Math.round(num(ch.endIdx, NaN)) }
       return o
     })
@@ -907,6 +1060,16 @@
       if (!ch.title && !plain(ch.html) && DATA[mode]) ch.title = out.data[ch.startIdx].fullDate + ' → ' + out.data[ch.endIdx].fullDate
       if (ch.scene === undefined) delete ch.scene
     })
+    if (mode === 'explainer') { // not about money: coins, ETFs and stock charts would mislead, so the topic's own icons
+      var lineOf = function (ch) { return ch.title + ' ' + plain(ch.html) + ' ' + (ch.q || '') } // title first: its words pick the icons
+      var talk = chapters.filter(function (ch) { return moneyTalk(lineOf(ch)) }).length
+      if (talk < Math.max(1, Math.ceil(chapters.length / 3)) && !moneyTalk(intro.title)) chapters.forEach(function (ch, i) {
+        if (NEUTRAL[ch.scene] && !(i && ch.scene === 'domanda')) return
+        var ic = iconsFor(lineOf(ch), 2)
+        ch.icons = ic.length ? ic : [{ id: 'lampadina', label: '' }]
+        ch.scene = 'icone'
+      })
+    }
     out.chapters = chapters
 
     var p0 = obj(c0.provocation), l1 = cutRich(p0.line1 || '', 130), l2 = cutRich(p0.line2 || '', 170)
@@ -940,7 +1103,8 @@
     if (ch.scene === 'cta') { title = 'Prova ' + brandName; alt = 'Link in bio' }
     var dm = low.match(/\b([1-9]|[12]\d|3[01])\s+(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)/)
     var ym = low.match(/\b(\d{1,2})\s+anni\b/)
-    return { title: title, alt: alt, number: /\d/.test(ch.big || '') ? ch.big : numberIn(text), day: dm ? +dm[1] : 0, years: ym && +ym[1] >= 1 && +ym[1] <= 60 ? +ym[1] : 0 }
+    return { title: title, alt: alt, number: /\d/.test(ch.big || '') ? ch.big : numberIn(text), day: dm ? +dm[1] : 0, years: ym && +ym[1] >= 1 && +ym[1] <= 60 ? +ym[1] : 0,
+      icons: ch.icons || [], link: /(\bvs\b|\bcontro\b|invece|mentre|oppure|differenz|confront)/.test(low) ? 'vs' : 'flow' }
   }
   /** opts.durations (optional, final seconds, e.g. the real voice measured at opts.speed): {intro, chapters: [], provocation, cta}; without them time comes from word count.
       opts.speed (1–2, default config.speed or 1) divides every estimated duration and the animation pacing: 2 = half as long. */
@@ -2551,6 +2715,16 @@
     // a script with questions: the question becomes q, the next beat its answer (scene and figure from the answer)
     var fq = fromBeats({ title: 'Interesse composto', beats: [{ text: 'Sai cos’è l’interesse composto?' }, { text: 'Cos’è l’interesse composto?' }, { text: 'Sono interessi che fanno altri interessi: 10.000 euro al 5% diventano 43.000 in 30 anni.' }, { text: 'E se aspetti dieci anni?' }, { text: 'Ne perdi quasi la metà.' }, { text: 'Prova Yourvest, link in bio' }] })
     ok(fq.chapters.length === 2 && fq.chapters[0].q === 'Cos’è l’interesse composto?' && fq.chapters[0].scene === 'interesse' && /10\.000/.test(fq.chapters[0].big) && fq.chapters[1].q === 'E se aspetti dieci anni?' && fq.chapters[1].scene !== 'domanda', 'fromBeats pairs questions: ' + JSON.stringify(fq.chapters.map(function (x) { return [x.q, x.scene, x.big] })))
+    // a topic that is not about money gets its own icons, never coins or ETFs; an ETF video keeps its money scenes
+    var tech = validate({ mode: 'explainer', intro: { title: 'IA in locale o server' }, chapters: [
+      { title: 'Locale: sul dispositivo. Server: la richiesta viaggia', html: 'In locale il modello gira sul telefono.', scene: 'distribuzione' },
+      { title: 'Potenza: i server usano modelli più grandi', html: 'Hardware enorme.', scene: 'crescita' },
+      { title: 'Connessione e costi', html: 'Il locale funziona anche offline.', scene: 'commissioni' }] })
+    ok(tech.chapters.every(function (x) { return x.scene === 'icone' && x.icons.length }) && tech.chapters[0].icons.map(function (x) { return x.id + ':' + x.label }).join() === 'telefono:Locale,server:Server', 'tech icons: ' + JSON.stringify(tech.chapters.map(function (x) { return x.icons })))
+    var asked = validate({ mode: 'explainer', chapters: [{ title: 'Un titolo', icons: ['cloud:Cloud', 'nonesiste', { id: 'Lucchetto', label: 'Privacy' }] }] }).chapters[0]
+    ok(asked.scene === 'icone' && asked.icons.length === 2 && asked.icons[1].id === 'lucchetto' && asked.icons[1].label === 'Privacy', 'icons from the AI: ' + JSON.stringify(asked.icons))
+    ok(validate(tech).chapters[0].icons.length === 2, 'icons survive a second validate')
+    ok(validate({ mode: 'explainer', chapters: [{ title: 'Ti versa i dividendi', html: 'Un ETF a distribuzione.', scene: 'distribuzione' }] }).chapters[0].scene === 'distribuzione', 'money video keeps money scenes')
     // the TER case against a hand calculation: 10.000 € at 6% gross minus TER for 20 years → 10000·1,0585^20 ≈ 31.176, 10000·1,045^20 ≈ 24.117
     var ter = fromTopic('differenza tra TER 0,15% e 1,5%').config, lastP = ter.data[ter.data.length - 1]
     ok(lastP.label === 'A20' && lastP.a === 31176 && lastP.b === 24117 && ter.series.a.name === 'TER 0,15%' && ter.series.b.name === 'TER 1,5%', 'TER maths: ' + JSON.stringify(lastP))
